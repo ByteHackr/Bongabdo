@@ -11,6 +11,7 @@ mkdir -p "$EXTENSION_DIR"
 
 # Copy files
 cp extension.js metadata.json stylesheet.css prefs.js "$EXTENSION_DIR/"
+cp -r lib "$EXTENSION_DIR/"
 cp -r schemas "$EXTENSION_DIR/"
 
 # Compile schemas

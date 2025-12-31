@@ -13,7 +13,7 @@ install: install-files compile-schemas
 
 install-files:
 	@mkdir -p $(INSTALL_DIR)
-	@cp -r extension.js metadata.json stylesheet.css prefs.js schemas $(INSTALL_DIR)/
+	@cp -r extension.js metadata.json stylesheet.css prefs.js schemas lib $(INSTALL_DIR)/
 	@echo "Files copied to $(INSTALL_DIR)"
 
 compile-schemas:
@@ -36,6 +36,7 @@ zip: clean
 	@zip -r build/$(UUID).zip . \
 		-x "*.git*" \
 		-x "*build*" \
+		-x "test/**" \
 		-x "*.md" \
 		-x "Makefile" \
 		-x "schemas/gschemas.compiled" \
