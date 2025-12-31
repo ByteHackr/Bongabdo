@@ -19,7 +19,8 @@ const monthStarts2025 = {
         "11": "2026-03-15"
     },
     "2026": {
-        "0": "2026-04-14"
+        "0": "2026-04-14",
+        "1": "2026-05-15"
     }
 };
 
@@ -83,8 +84,10 @@ testMonths.forEach(({ month, start, end, name }) => {
 const choitroEnd = Bengali.gregorianToBengali(2026, 3, 15, monthStarts2025);
 Assert.assertEquals(choitroEnd.month, 11, 'Mar 15 should be Choitro');
 
-const boishakhStart = Bengali.gregorianToBengali(2026, 4, 14, monthStarts2025);
-Assert.assertEquals(boishakhStart.month, 0, 'Apr 14 should be Boishakh start');
+// For Surya Siddhanta mapping: mapping date is Sankranti; day 1 begins the NEXT day.
+const boishakhStart = Bengali.gregorianToBengali(2026, 4, 15, monthStarts2025);
+Assert.assertEquals(boishakhStart.month, 0, 'Apr 15 should be Boishakh');
+Assert.assertEquals(boishakhStart.day, 1, 'Apr 15 should be day 1 (day after Sankranti)');
 
 console.log('All month calendar tests passed!');
 

@@ -111,6 +111,10 @@ for (const [y, m, d] of [
 
 // ===== JSON Mapping Tests (West Bengal Calendar) =====
 const monthStarts2025 = {
+    "2024": {
+        "0": "2024-04-14",
+        "11": "2025-03-15"
+    },
     "2025": {
         "0": "2025-04-15",
         "1": "2025-05-15",
@@ -152,6 +156,9 @@ const apr15 = Bengali.gregorianToBengali(2025, 4, 15, monthStarts2025);
 const apr16 = Bengali.gregorianToBengali(2025, 4, 16, monthStarts2025);
 Assert.assertEquals(apr16.month, 0, 'Apr 16 should be Boishakh');
 Assert.assertEquals(apr16.day, 1, 'Apr 16 should be day 1 (day after Sankranti)');
+// Year boundary: Sankranti date stays in previous Bengali year; next day starts new year.
+Assert.assertEquals(apr15.year, 2024 - 593, 'Apr 15 (Sankranti date) should be previous Bengali year');
+Assert.assertEquals(apr16.year, 2025 - 593, 'Apr 16 should be new Bengali year');
 
 // Test with null mapping (should fallback to heuristic)
 const fallback = Bengali.gregorianToBengali(2024, 4, 14, null);
