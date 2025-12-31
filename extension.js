@@ -4,8 +4,8 @@ import GLib from 'gi://GLib';
 import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-import PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
-import PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import { Extension, gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
@@ -63,7 +63,7 @@ export default class BengaliCalendarExtension extends Extension {
             60,
             () => {
                 this._updateDisplay();
-                return GLib.SOURCE_CONTINUE;
+                return true; // Continue the timeout
             }
         );
 
@@ -138,7 +138,7 @@ export default class BengaliCalendarExtension extends Extension {
         }
 
         if (this._updateIntervalId) {
-            GLib.Source.remove(this._updateIntervalId);
+            GLib.source_remove(this._updateIntervalId);
             this._updateIntervalId = null;
         }
 
