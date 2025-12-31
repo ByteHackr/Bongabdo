@@ -23,7 +23,7 @@ const bd1 = Bengali.gregorianToBengali(2024, 4, 14);
 Assert.assertEquals(bd1.month, 0, 'Apr 14 should map to Boishakh (month 0) in our heuristic');
 Assert.assertEquals(bd1.day, 1, 'Apr 14 should map to day 1 in our heuristic');
 
-// Day range sanity
+// Day range sanity (Bengali months can have up to 32 days)
 for (const [y, m, d] of [
   [2024, 1, 1],
   [2024, 2, 29],
@@ -33,7 +33,7 @@ for (const [y, m, d] of [
 ]) {
   const bd = Bengali.gregorianToBengali(y, m, d);
   Assert.assert(bd.month >= 0 && bd.month <= 11, `month out of range for ${y}-${m}-${d}`);
-  Assert.assert(bd.day >= 1 && bd.day <= 31, `day out of range for ${y}-${m}-${d}`);
+  Assert.assert(bd.day >= 1 && bd.day <= 32, `day out of range for ${y}-${m}-${d} (Bengali months can have up to 32 days)`);
   Assert.assertTruthy(typeof bd.monthName === 'string' && bd.monthName.length > 0, 'monthName required');
 }
 
