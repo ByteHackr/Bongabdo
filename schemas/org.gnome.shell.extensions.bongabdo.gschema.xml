@@ -22,7 +22,7 @@
       <description>Display numbers using Bengali numerals (০-৯) instead of Western numerals</description>
     </key>
     <key name="font-size" type="i">
-      <default>12</default>
+      <default>14</default>
       <summary>Font Size</summary>
       <description>Font size for Bengali date display in pixels</description>
       <range min="8" max="24"/>
@@ -30,9 +30,21 @@
     <key name="position" type="s">
       <default>'right'</default>
       <summary>Panel Position</summary>
-      <description>Position in panel: 'left' or 'right'</description>
+      <description>Position in panel: 'left', 'center', or 'right'</description>
+    </key>
+    <key name="location" type="s">
+      <default>'west-bengal'</default>
+      <summary>Location</summary>
+      <description>Calendar location: 'west-bengal', 'bangladesh', or 'india'</description>
+    </key>
+    <key name="show-month-calendar" type="b">
+      <default>true</default>
+      <summary>Show Month Calendar</summary>
+      <description>Display full month calendar in popup menu</description>
     </key>
   </schema>
 </schemalist>
+
+
 
 

@@ -1,6 +1,6 @@
 .bengali-calendar-label {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
-    font-size: 12px;
+    font-size: 14px;
     padding: 0 8px;
     color: inherit;
 }
@@ -25,4 +25,40 @@
     padding: 4px 8px;
     color: inherit;
     font-style: italic;
+}
+
+.bengali-calendar-grid {
+    padding: 8px;
+    spacing: 4px;
+}
+
+.bengali-calendar-header {
+    font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    padding: 4px;
+}
+
+.bengali-calendar-day-name {
+    font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    min-width: 28px;
+    text-align: center;
+    padding: 2px;
+}
+
+.bengali-calendar-day {
+    font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
+    font-size: 11px;
+    min-width: 28px;
+    text-align: center;
+    padding: 4px 2px;
+}
+
+.bengali-calendar-day.today {
+    font-weight: bold;
+    background-color: rgba(78, 154, 6, 0.3);
+    border-radius: 4px;
 }

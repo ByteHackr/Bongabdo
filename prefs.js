@@ -10,7 +10,7 @@ export default class BengaliCalendarPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         const settings = this.getSettings();
 
-        window.set_default_size(520, 420);
+        window.set_default_size(520, 500);
 
         const page = new Adw.PreferencesPage({
             title: _('Bongabdo'),
@@ -49,10 +49,37 @@ export default class BengaliCalendarPreferences extends ExtensionPreferences {
         });
         settings.connect('changed::display-format', syncFormatFromSetting);
 
+        // Location (string)
+        const locationOptions = [
+            ['west-bengal', _('West Bengal')],
+            ['bangladesh', _('Bangladesh')],
+            ['india', _('India')],
+        ];
+        const locationDropDown = Gtk.DropDown.new_from_strings(locationOptions.map(([, label]) => label));
+        locationDropDown.valign = Gtk.Align.CENTER;
+        const locationRow = new Adw.ActionRow({
+            title: _('Location'),
+        });
+        locationRow.add_suffix(locationDropDown);
+        displayGroup.add(locationRow);
+
+        const syncLocationFromSetting = () => {
+            const current = settings.get_string('location');
+            const idx = Math.max(0, locationOptions.findIndex(([id]) => id === current));
+            locationDropDown.selected = idx;
+        };
+        syncLocationFromSetting();
+        locationDropDown.connect('notify::selected', () => {
+            const idx = locationDropDown.selected;
+            settings.set_string('location', locationOptions[idx][0]);
+        });
+        settings.connect('changed::location', syncLocationFromSetting);
+
         // Toggles
         displayGroup.add(this._switchRow(settings, 'show-gregorian', _('Show Gregorian Date in Popup')));
         displayGroup.add(this._switchRow(settings, 'show-festivals', _('Show Festivals and Holidays')));
         displayGroup.add(this._switchRow(settings, 'use-bengali-numerals', _('Use Bengali Numerals (০-৯)')));
+        displayGroup.add(this._switchRow(settings, 'show-month-calendar', _('Show Month Calendar in Popup')));
 
         // Font size (int)
         const fontRow = new Adw.ActionRow({ title: _('Font Size') });
@@ -74,6 +101,7 @@ export default class BengaliCalendarPreferences extends ExtensionPreferences {
         // Panel position (string)
         const positionOptions = [
             ['left', _('Left')],
+            ['center', _('Center')],
             ['right', _('Right')],
         ];
         const positionDropDown = Gtk.DropDown.new_from_strings(positionOptions.map(([, label]) => label));
