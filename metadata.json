@@ -2,7 +2,7 @@
   "name": "Bengali Calendar",
   "description": "Display Bengali calendar dates (বাংলা বর্ষপঞ্জি) in the GNOME Shell panel with festivals, holidays, and customizable formats",
   "uuid": "bengali-calendar@bengali-calendar.github.io",
-  "shell-version": ["45", "46", "47"],
+  "shell-version": ["45", "46", "47", "48", "49"],
   "url": "https://github.com/ByteHackr/Bongabdo",
   "version": 2,
   "settings-schema": "org.gnome.shell.extensions.bengali-calendar",
