@@ -144,6 +144,12 @@ export default class BengaliCalendarExtension extends Extension {
 
             const fontSize = this._settings?.get_int('font-size') || 14;
             this._panelLabel.style = `font-size: ${fontSize}px;`;
+            
+            // Center align the label text
+            if (this._panelLabel.clutter_text) {
+                this._panelLabel.clutter_text.set_line_alignment(Clutter.TextAlignment.CENTER);
+            }
+            this._panelLabel.x_align = Clutter.ActorAlign.CENTER;
 
             this._indicator.add_child(this._panelLabel);
 
