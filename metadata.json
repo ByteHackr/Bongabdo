@@ -3,9 +3,8 @@
   "description": "A Simple Bengali Calendar Extension for Gnome Shell",
   "uuid": "bongabdo@bongabdo.github.io",
   "shell-version": ["45", "46", "47", "48", "49"],
-  "icon": "icon.svg",
   "url": "https://github.com/ByteHackr/Bongabdo",
-  "version": 3,
+  "version": 4,
   "settings-schema": "org.gnome.shell.extensions.bongabdo",
   "gettext-domain": "bongabdo"
 }

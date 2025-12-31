@@ -13,7 +13,7 @@ install: install-files compile-schemas
 
 install-files:
 	@mkdir -p $(INSTALL_DIR)
-	@cp -r extension.js metadata.json stylesheet.css prefs.js schemas lib icon.svg icon-symbolic.svg $(INSTALL_DIR)/
+	@cp -r extension.js metadata.json stylesheet.css prefs.js schemas lib $(INSTALL_DIR)/
 	@echo "Files copied to $(INSTALL_DIR)"
 	@echo "Note: Update lib/bengaliMonthStarts.json from Panjika each year for accurate West Bengal dates"
 
@@ -36,7 +36,6 @@ zip: clean
 	@mkdir -p build
 	@zip -r build/$(UUID).zip \
 		extension.js metadata.json stylesheet.css prefs.js LICENSE \
-		icon.svg icon-symbolic.svg \
 		schemas lib \
 		-x "schemas/gschemas.compiled"
 	@echo "Extension packaged to build/$(UUID).zip"

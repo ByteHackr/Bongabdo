@@ -10,6 +10,8 @@ function readText(path) {
 // Integration smoke checks: ensure extension structure exists and follows patterns.
 
 const extensionText = readText('extension.js');
+const indicatorText = readText('lib/indicator.js');
+const monthStartsText = readText('lib/monthStarts.js');
 const prefsText = readText('prefs.js');
 const metadataText = readText('metadata.json');
 
@@ -23,32 +25,36 @@ Assert.assertTruthy(extensionText.includes('disable()'), 'extension.js should ha
 Assert.assertTruthy(extensionText.includes('this.getSettings()'), 'extension.js should use this.getSettings()');
 Assert.assertTruthy(extensionText.includes('get_string'), 'extension.js should read string settings');
 Assert.assertTruthy(extensionText.includes('get_int'), 'extension.js should read int settings');
-Assert.assertTruthy(extensionText.includes('get_boolean'), 'extension.js should read boolean settings');
+Assert.assertTruthy(extensionText.includes('get_boolean') || indicatorText.includes('get_boolean'),
+    'code should read boolean settings');
+Assert.assertTruthy(extensionText.includes('connectObject'), 'extension.js should use connectObject for signals');
+Assert.assertTruthy(extensionText.includes('disconnectObject'), 'extension.js should disconnectObject on disable');
 
 // ===== Periodic Update Tests =====
 Assert.assertTruthy(extensionText.includes('GLib.timeout_add_seconds'), 'extension.js should use periodic update');
-Assert.assertTruthy(extensionText.includes('_updateDisplay'), 'extension.js should have updateDisplay method');
+Assert.assertTruthy(extensionText.includes('GLib.source_remove'), 'extension.js should remove timeout on disable');
 
 // ===== Module Import Tests =====
-Assert.assertTruthy(extensionText.includes("./lib/bengaliCalendar.js"), 'extension.js should import lib/bengaliCalendar.js');
-Assert.assertTruthy(extensionText.includes('import * as Bengali'), 'extension.js should import Bengali module');
+Assert.assertTruthy(extensionText.includes("./lib/indicator.js"), 'extension.js should import indicator module');
+Assert.assertTruthy(indicatorText.includes("./bengaliCalendar.js"), 'indicator should import Bengali calendar logic');
 
 // ===== UI Component Tests =====
-Assert.assertTruthy(extensionText.includes('PanelMenu.Button'), 'extension.js should create PanelMenu.Button');
-Assert.assertTruthy(extensionText.includes('PopupMenu.PopupMenuItem'), 'extension.js should use PopupMenuItem');
-Assert.assertTruthy(extensionText.includes('St.Label'), 'extension.js should use St.Label');
+Assert.assertTruthy(indicatorText.includes('PanelMenu.Button'), 'indicator should create PanelMenu.Button');
+Assert.assertTruthy(indicatorText.includes('PopupMenu.PopupMenuItem'), 'indicator should use PopupMenuItem');
+Assert.assertTruthy(indicatorText.includes('St.Label'), 'indicator should use St.Label');
 
 // ===== Panel Position Tests =====
-Assert.assertTruthy(extensionText.includes('addToStatusArea'), 'extension.js should add to status area');
-Assert.assertTruthy(extensionText.includes('position'), 'extension.js should handle position setting');
-Assert.assertTruthy(extensionText.includes('left') || extensionText.includes('right') || extensionText.includes('center'), 
-    'extension.js should support panel positions');
+Assert.assertTruthy(indicatorText.includes('addToStatusArea'), 'indicator should add to status area');
+Assert.assertTruthy(extensionText.includes('position') || indicatorText.includes('position'), 'code should handle position setting');
+Assert.assertTruthy(indicatorText.includes('left') || indicatorText.includes('right') || indicatorText.includes('center'),
+    'indicator should support panel positions');
 
 // ===== Calendar Features Tests =====
-Assert.assertTruthy(extensionText.includes('show-month-calendar'), 'extension.js should support month calendar');
-Assert.assertTruthy(extensionText.includes('show-gregorian'), 'extension.js should support Gregorian date');
-Assert.assertTruthy(extensionText.includes('show-festivals'), 'extension.js should support festivals');
-Assert.assertTruthy(extensionText.includes('use-bengali-numerals'), 'extension.js should support Bengali numerals');
+const combined = extensionText + indicatorText + monthStartsText;
+Assert.assertTruthy(combined.includes('show-month-calendar'), 'code should support month calendar');
+Assert.assertTruthy(combined.includes('show-gregorian'), 'code should support Gregorian date');
+Assert.assertTruthy(combined.includes('show-festivals'), 'code should support festivals');
+Assert.assertTruthy(combined.includes('use-bengali-numerals'), 'code should support Bengali numerals');
 
 // ===== Preferences Tests =====
 Assert.assertTruthy(prefsText.includes('export default class'), 'prefs.js should export a default class');
@@ -62,12 +68,11 @@ Assert.assertTruthy(metadataText.includes('"shell-version"'), 'metadata.json sho
 Assert.assertTruthy(metadataText.includes('"settings-schema"'), 'metadata.json should have settings-schema');
 
 // ===== JSON Loading Tests =====
-Assert.assertTruthy(extensionText.includes('bengaliMonthStarts.json'), 'extension.js should load month starts JSON');
-Assert.assertTruthy(extensionText.includes('_loadMonthStarts'), 'extension.js should have loadMonthStarts method');
+Assert.assertTruthy(monthStartsText.includes('bengaliMonthStarts.json'), 'monthStarts loader should reference bengaliMonthStarts.json');
 
 // ===== Cleanup Tests =====
-Assert.assertTruthy(extensionText.includes('disconnect'), 'extension.js should disconnect settings');
-Assert.assertTruthy(extensionText.includes('source_remove'), 'extension.js should remove timeout');
-Assert.assertTruthy(extensionText.includes('destroy'), 'extension.js should destroy indicator');
+Assert.assertTruthy(extensionText.includes('disconnectObject'), 'extension.js should disconnectObject in disable');
+Assert.assertTruthy(extensionText.includes('source_remove'), 'extension.js should remove timeout in disable');
+Assert.assertTruthy(indicatorText.includes('destroy()'), 'indicator should implement destroy()');
 
 console.log('All extension static tests passed!');

@@ -11,6 +11,8 @@ function readText(path) {
 
 const schemaText = readText('schemas/org.gnome.shell.extensions.bongabdo.gschema.xml');
 const extensionText = readText('extension.js');
+const indicatorText = readText('lib/indicator.js');
+const monthStartsText = readText('lib/monthStarts.js');
 const prefsText = readText('prefs.js');
 
 // Required settings
@@ -33,8 +35,9 @@ requiredSettings.forEach(setting => {
 
 // Test extension uses all settings
 requiredSettings.forEach(setting => {
-    Assert.assertTruthy(extensionText.includes(setting), 
-        `Extension should use ${setting} setting`);
+    const combined = extensionText + indicatorText + monthStartsText;
+    Assert.assertTruthy(combined.includes(setting),
+        `Code should use ${setting} setting`);
 });
 
 // Test prefs UI has all settings
