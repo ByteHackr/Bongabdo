@@ -3,6 +3,7 @@
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import St from 'gi://St';
+import Clutter from 'gi://Clutter';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -157,6 +158,10 @@ export default class BengaliCalendarExtension extends Extension {
                 text: '',
                 style_class: 'bengali-calendar-label',
             });
+            // Visually center the label inside the top bar.
+            // (Without this, some fonts can look "stuck" to the top due to baseline metrics.)
+            this._panelLabel.y_align = Clutter.ActorAlign.CENTER;
+            this._panelLabel.y_expand = true;
 
             const fontSize = this._settings?.get_int('font-size') || 14;
             this._panelLabel.style = `font-size: ${fontSize}px;`;
