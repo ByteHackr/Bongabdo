@@ -135,7 +135,6 @@ bengali-calendar@bengali-calendar.github.io/
 ├── metadata.json          # Extension metadata
 ├── stylesheet.css         # Styling
 ├── prefs.js              # Preferences widget code
-├── prefs.ui              # Preferences UI definition
 ├── schemas/
 │   └── org.gnome.shell.extensions.bengali-calendar.gschema.xml
 ├── Makefile              # Installation helper
@@ -180,7 +179,7 @@ Contributions are welcome! Please open an issue or submit a pull request on [Git
 
 ## 📄 License
 
-This project is licensed under the GPL-3.0 License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🙏 Acknowledgments
 
