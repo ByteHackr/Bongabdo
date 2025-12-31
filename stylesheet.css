@@ -20,6 +20,15 @@
     font-stretch: normal;
 }
 
+/* Center align menu items */
+popup-menu-item:first-child {
+    text-align: center;
+}
+
+popup-menu-item .bengali-date-popup {
+    text-align: center;
+}
+
 .gregorian-date-popup {
     font-size: 13px;
     font-weight: 400;
