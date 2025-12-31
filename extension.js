@@ -5,13 +5,13 @@ import Gio from 'gi://Gio';
 import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-import * as Calendar from 'resource:///org/gnome/shell/ui/calendar.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import { Extension, gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import * as Bengali from './lib/bengaliCalendar.js';
+import { buildMonthMatrix } from './lib/monthMatrix.js';
 
 /**
  * Bengali Calendar Extension for GNOME Shell
@@ -36,9 +36,11 @@ export default class BengaliCalendarExtension extends Extension {
             // Load Bengali month start dates mapping based on location
             const location = this._settings.get_string('location');
             this._monthStarts = this._loadMonthStarts(location);
-            // GNOME Shell built-in calendar widget (for default look)
-            this._shellCalendar = null;
-            this._shellCalendarContainer = null;
+            // Calendar popup state
+            this._calendarMonthOffset = 0;
+            this._lastBengaliDate = null;
+            this._lastUseBengaliNumerals = true;
+            this._menuOpenSignalId = 0;
 
             this._createIndicator();
             if (!this._indicator) {
@@ -47,6 +49,17 @@ export default class BengaliCalendarExtension extends Extension {
 
             this._addToPanel();
             this._updateDisplay();
+
+            // Reset calendar navigation when opening the menu
+            if (this._indicator?.menu) {
+                this._menuOpenSignalId = this._indicator.menu.connect('open-state-changed', (_menu, isOpen) => {
+                    if (!isOpen)
+                        return;
+                    this._calendarMonthOffset = 0;
+                    if (this._lastBengaliDate)
+                        this._buildMonthCalendar(this._lastBengaliDate, this._lastUseBengaliNumerals);
+                });
+            }
 
             // Set up periodic update (every minute)
             this._updateIntervalId = GLib.timeout_add_seconds(
@@ -341,15 +354,13 @@ export default class BengaliCalendarExtension extends Extension {
             return;
         }
 
+        this._lastBengaliDate = bengaliDate;
+        this._lastUseBengaliNumerals = !!useBengaliNumerals;
+
         // Remove old calendar if exists
         if (this._calendarBox) {
             try {
-                // Do not destroy the shared GNOME Shell calendar container; reuse it.
-                if (this._shellCalendarContainer && this._calendarBox === this._shellCalendarContainer) {
-                    // noop
-                } else {
-                    this._calendarBox.destroy();
-                }
+                this._calendarBox.destroy();
             } catch (e) {
                 logError(e, 'Error destroying old calendar');
             }
@@ -367,100 +378,250 @@ export default class BengaliCalendarExtension extends Extension {
         try {
             this._calendarMenuItem.visible = true;
 
-            // Preferred: GNOME Shell built-in calendar widget (matches the default date menu).
-            // If this fails (API changes across Shell versions), fall back to our Bengali grid.
-            try {
-                if (!this._shellCalendarContainer) {
-                    this._shellCalendarContainer = new St.BoxLayout({
-                        vertical: true,
-                        style_class: 'bongabdo-shell-calendar-container',
-                    });
-                }
-
-                if (!this._shellCalendar) {
-                    this._shellCalendar = new Calendar.Calendar();
-                }
-
-                const actor = this._shellCalendar?.actor ?? this._shellCalendar;
-                if (actor?.get_parent?.())
-                    actor.get_parent().remove_child(actor);
-
-                const existingChildren = this._shellCalendarContainer.get_children?.() ?? [];
-                existingChildren.forEach(child => {
-                    try {
-                        this._shellCalendarContainer.remove_child(child);
-                    } catch (e) {
-                        // ignore
-                    }
-                });
-
-                if (actor)
-                    this._shellCalendarContainer.add_child(actor);
-
-                this._calendarBox = this._shellCalendarContainer;
-                this._updateCalendarMenuItem(this._shellCalendarContainer);
-                return;
-            } catch (e) {
-                logError(e, 'Bongabdo: Failed to create Shell calendar widget, falling back');
-            }
-
-            // Create calendar container
-            const box = new St.BoxLayout({
-                vertical: true,
-                style_class: 'bengali-calendar-grid'
-            });
-
-            // Month header
-            const monthName = bengaliDate.monthName || '';
-            const bengaliYear = bengaliDate.year || 0;
-            const header = new St.Label({
-                text: `${monthName} ${Bengali.formatNumber(bengaliYear, useBengaliNumerals)}`,
-                style_class: 'bengali-calendar-header'
-            });
-            box.add_child(header);
-
-            // Day names row
-            const dayNamesRow = new St.BoxLayout({
-                vertical: false,
-                style_class: 'bengali-calendar-day-names-row'
-            });
-            const dayNames = ['র', 'সো', 'ম', 'বু', 'বৃ', 'শু', 'শ'];
-            dayNames.forEach(day => {
-                const label = new St.Label({
-                    text: day,
-                    style_class: 'bengali-calendar-day-name'
-                });
-                dayNamesRow.add_child(label);
-            });
-            box.add_child(dayNamesRow);
-
-            // Get current month's dates
-            const now = new Date();
-            const year = now.getFullYear();
-            const yearStr = String(year);
-            const prevYearStr = String(year - 1);
-            
-            let yearData = null;
-            if (this._monthStarts?.[yearStr]?.[String(bengaliDate.month)]) {
-                yearData = this._monthStarts[yearStr];
-            } else if (this._monthStarts?.[prevYearStr]?.[String(bengaliDate.month)]) {
-                yearData = this._monthStarts[prevYearStr];
-            }
-            
-            // Bangladesh fixed calendar calculation
-            if (!yearData) {
-                this._buildFixedCalendar(box, bengaliDate, year, useBengaliNumerals);
+            const view = this._computeMonthView(bengaliDate);
+            if (!view) {
+                this._calendarMenuItem.visible = false;
                 return;
             }
 
-            // West Bengal/India variable calendar (JSON mapping)
-            this._buildVariableCalendar(box, bengaliDate, yearData, year, useBengaliNumerals);
+            const box = this._renderMonthView(view, useBengaliNumerals);
+            this._calendarBox = box;
+            this._updateCalendarMenuItem(box);
         } catch (e) {
             logError(e, 'Error building month calendar');
             if (this._calendarMenuItem) {
                 this._calendarMenuItem.visible = false;
             }
         }
+    }
+
+    _computeMonthView(bengaliDate) {
+        const offset = Number(this._calendarMonthOffset || 0);
+        const baseMonth = bengaliDate.month;
+        const baseYear = bengaliDate.year || 0;
+
+        let month = baseMonth + offset;
+        let year = baseYear;
+        while (month < 0) {
+            month += 12;
+            year -= 1;
+        }
+        while (month > 11) {
+            month -= 12;
+            year += 1;
+        }
+
+        const location = this._settings?.get_string('location') || 'west-bengal';
+        const monthName = Bengali.BENGALI_MONTHS?.[month] || bengaliDate.monthName || '';
+        const todayDay = offset === 0 ? bengaliDate.day : 0;
+
+        if (location === 'bangladesh') {
+            const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+            const monthLengths = [31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30, 30];
+            if (isLeapYear)
+                monthLengths[11] = 32;
+
+            const daysInMonth = monthLengths[month] || 30;
+            const pohelaBoishakhGregorianYear = year + 593;
+            const pohelaBoishakh = new Date(pohelaBoishakhGregorianYear, 3, 14);
+
+            let cumulativeDays = 0;
+            for (let i = 0; i < month; i++)
+                cumulativeDays += monthLengths[i];
+
+            const monthStart = new Date(pohelaBoishakh);
+            monthStart.setDate(monthStart.getDate() + cumulativeDays);
+            const firstDayOfWeek = monthStart.getDay();
+
+            const prevMonthIndex = (month + 11) % 12;
+            const prevMonthYear = month === 0 ? year - 1 : year;
+            const prevLeap = (prevMonthYear % 4 === 0 && prevMonthYear % 100 !== 0) || (prevMonthYear % 400 === 0);
+            const prevMonthLengths = [...monthLengths];
+            if (prevLeap)
+                prevMonthLengths[11] = 32;
+            const prevMonthDays = prevMonthLengths[prevMonthIndex] || 30;
+
+            return { month, year, monthName, daysInMonth, firstDayOfWeek, prevMonthDays, todayDay };
+        }
+
+        // West Bengal/India mapping-based view (best-effort)
+        const anchor = new Date();
+        try {
+            anchor.setMonth(anchor.getMonth() + offset);
+        } catch (e) {
+            // ignore
+        }
+
+        const anchorYear = anchor.getFullYear();
+        const tryYears = [String(anchorYear), String(anchorYear - 1), String(anchorYear + 1)];
+        const monthKey = String(month);
+        const nextMonthKey = String((month + 1) % 12);
+        const prevMonthKey = String((month + 11) % 12);
+
+        let yearData = null;
+        let yearKeyUsed = null;
+        for (const y of tryYears) {
+            if (this._monthStarts?.[y]?.[monthKey]) {
+                yearData = this._monthStarts[y];
+                yearKeyUsed = y;
+                break;
+            }
+        }
+
+        if (!yearData) {
+            const firstDayOfWeek = (new Date(anchor.getFullYear(), anchor.getMonth(), 1)).getDay();
+            return { month, year, monthName, daysInMonth: 30, firstDayOfWeek, prevMonthDays: 30, todayDay };
+        }
+
+        const parseDate = (str) => {
+            const parts = String(str).split('-');
+            const [y, m, d] = parts.map(Number);
+            return new Date(y, m - 1, d);
+        };
+
+        const monthStartStr = yearData[monthKey];
+        let nextMonthStartStr = yearData[nextMonthKey];
+
+        if (month === 11) {
+            const nextYearKey = String(Number(yearKeyUsed) + 1);
+            if (this._monthStarts?.[nextYearKey]?.['0'])
+                nextMonthStartStr = this._monthStarts[nextYearKey]['0'];
+        }
+
+        if (!monthStartStr || !nextMonthStartStr)
+            return { month, year, monthName, daysInMonth: 30, firstDayOfWeek: 0, prevMonthDays: 30, todayDay };
+
+        const monthStart = parseDate(monthStartStr);
+        const nextMonthStart = parseDate(nextMonthStartStr);
+        const daysInMonthRaw = Math.floor((nextMonthStart - monthStart) / (1000 * 60 * 60 * 24));
+        const daysInMonth = Math.max(1, Math.min(daysInMonthRaw || 30, 32));
+
+        const day1Date = new Date(monthStart);
+        day1Date.setDate(day1Date.getDate() + 1);
+        const firstDayOfWeek = day1Date.getDay();
+
+        let prevMonthDays = 30;
+        try {
+            let prevMonthStartStr = yearData[prevMonthKey];
+            if (month === 0) {
+                const prevYearKey = String(Number(yearKeyUsed) - 1);
+                if (this._monthStarts?.[prevYearKey]?.['11'])
+                    prevMonthStartStr = this._monthStarts[prevYearKey]['11'];
+            }
+            if (prevMonthStartStr) {
+                const prevMonthStart = parseDate(prevMonthStartStr);
+                const prevDaysRaw = Math.floor((monthStart - prevMonthStart) / (1000 * 60 * 60 * 24));
+                prevMonthDays = Math.max(1, Math.min(prevDaysRaw || 30, 32));
+            }
+        } catch (e) {
+            // ignore
+        }
+
+        return { month, year, monthName, daysInMonth, firstDayOfWeek, prevMonthDays, todayDay };
+    }
+
+    _renderMonthView(view, useBengaliNumerals) {
+        const box = new St.BoxLayout({
+            vertical: true,
+            style_class: 'bongabdo-calendar',
+        });
+
+        const headerRow = new St.BoxLayout({
+            vertical: false,
+            style_class: 'bongabdo-calendar-header-row',
+        });
+
+        const mkNavButton = (iconName, onClick) => {
+            const btn = new St.Button({
+                reactive: true,
+                can_focus: true,
+                track_hover: true,
+                style_class: 'bongabdo-calendar-nav-button',
+                child: new St.Icon({
+                    icon_name: iconName,
+                    style_class: 'popup-menu-icon',
+                }),
+            });
+            btn.connect('clicked', () => {
+                try {
+                    onClick();
+                } catch (e) {
+                    logError(e, 'Error handling calendar navigation');
+                }
+            });
+            return btn;
+        };
+
+        headerRow.add_child(mkNavButton('go-previous-symbolic', () => {
+            this._calendarMonthOffset = Number(this._calendarMonthOffset || 0) - 1;
+            if (this._lastBengaliDate)
+                this._buildMonthCalendar(this._lastBengaliDate, this._lastUseBengaliNumerals);
+        }));
+
+        const headerLabel = new St.Label({
+            text: `${view.monthName} ${Bengali.formatNumber(view.year, useBengaliNumerals)}`,
+            style_class: 'bongabdo-calendar-header-label',
+        });
+        headerLabel.x_expand = true;
+        headerRow.add_child(headerLabel);
+
+        headerRow.add_child(mkNavButton('go-next-symbolic', () => {
+            this._calendarMonthOffset = Number(this._calendarMonthOffset || 0) + 1;
+            if (this._lastBengaliDate)
+                this._buildMonthCalendar(this._lastBengaliDate, this._lastUseBengaliNumerals);
+        }));
+
+        box.add_child(headerRow);
+
+        const dayNamesRow = new St.BoxLayout({
+            vertical: false,
+            style_class: 'bongabdo-calendar-day-names-row',
+        });
+        const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        dayNames.forEach(d => {
+            dayNamesRow.add_child(new St.Label({
+                text: d,
+                style_class: 'bongabdo-calendar-day-name',
+            }));
+        });
+        box.add_child(dayNamesRow);
+
+        const cells = buildMonthMatrix({
+            daysInMonth: view.daysInMonth,
+            firstDayOfWeek: view.firstDayOfWeek,
+            prevMonthDays: view.prevMonthDays,
+        });
+
+        const weeksBox = new St.BoxLayout({
+            vertical: true,
+            style_class: 'bongabdo-calendar-weeks',
+        });
+
+        for (let r = 0; r < 6; r++) {
+            const row = new St.BoxLayout({
+                vertical: false,
+                style_class: 'bongabdo-calendar-week-row',
+            });
+            for (let c = 0; c < 7; c++) {
+                const cell = cells[r * 7 + c];
+                const inMonth = !!cell.inMonth;
+                const dayNum = cell.day || 0;
+                const isToday = inMonth && view.todayDay && (dayNum === view.todayDay) && (Number(this._calendarMonthOffset || 0) === 0);
+
+                const text = dayNum ? Bengali.formatNumber(dayNum, useBengaliNumerals) : '';
+                const style = [
+                    'bongabdo-calendar-day',
+                    inMonth ? '' : 'other-month',
+                    isToday ? 'today' : '',
+                ].filter(Boolean).join(' ');
+
+                row.add_child(new St.Label({ text, style_class: style }));
+            }
+            weeksBox.add_child(row);
+        }
+
+        box.add_child(weeksBox);
+        return box;
     }
 
     /**
@@ -775,6 +936,15 @@ export default class BengaliCalendarExtension extends Extension {
             this._settingsConnections = null;
         }
 
+        if (this._menuOpenSignalId && this._indicator?.menu) {
+            try {
+                this._indicator.menu.disconnect(this._menuOpenSignalId);
+            } catch (e) {
+                // ignore
+            }
+            this._menuOpenSignalId = 0;
+        }
+
         // Remove update interval
         if (this._updateIntervalId) {
             try {
@@ -794,15 +964,9 @@ export default class BengaliCalendarExtension extends Extension {
             }
             this._calendarBox = null;
         }
-        if (this._shellCalendarContainer) {
-            try {
-                this._shellCalendarContainer.destroy();
-            } catch (e) {
-                logError(e, 'Error destroying shell calendar container');
-            }
-            this._shellCalendarContainer = null;
-        }
-        this._shellCalendar = null;
+        this._calendarMonthOffset = 0;
+        this._lastBengaliDate = null;
+        this._lastUseBengaliNumerals = true;
 
         // Destroy indicator
         if (this._indicator) {

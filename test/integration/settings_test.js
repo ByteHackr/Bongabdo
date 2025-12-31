@@ -73,4 +73,3 @@ Assert.assertTruthy(prefsText.includes('Bangladesh'), 'should have Bangladesh op
 Assert.assertTruthy(prefsText.includes('India'), 'should have India option');
 
 console.log('All settings tests passed!');
-

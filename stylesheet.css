@@ -52,9 +52,75 @@ popup-menu-item .bengali-date-popup {
     text-align: center;
 }
 
-/* GNOME Shell default calendar container (used in the system date menu) */
-.bongabdo-shell-calendar-container {
-    padding: 6px 10px 10px 10px;
+/* GNOME-like Bengali month calendar (popup) */
+.bongabdo-calendar {
+    padding: 10px 12px 12px 12px;
+    spacing: 8px;
+    min-width: 260px;
+}
+
+.bongabdo-calendar-header-row {
+    spacing: 6px;
+    padding: 2px 2px;
+}
+
+.bongabdo-calendar-nav-button {
+    padding: 6px;
+    border-radius: 999px;
+}
+
+.bongabdo-calendar-nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.bongabdo-calendar-header-label {
+    font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    padding: 4px 0;
+}
+
+.bongabdo-calendar-day-names-row {
+    spacing: 4px;
+    padding: 0 2px;
+}
+
+.bongabdo-calendar-day-name {
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 34px;
+    max-width: 34px;
+    text-align: center;
+    opacity: 0.65;
+}
+
+.bongabdo-calendar-weeks {
+    spacing: 2px;
+}
+
+.bongabdo-calendar-week-row {
+    spacing: 4px;
+}
+
+.bongabdo-calendar-day {
+    font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
+    font-size: 12px;
+    min-width: 34px;
+    max-width: 34px;
+    padding: 8px 0;
+    text-align: center;
+    border-radius: 999px;
+}
+
+.bongabdo-calendar-day.other-month {
+    opacity: 0.35;
+}
+
+.bongabdo-calendar-day.today {
+    font-weight: 700;
+    background-color: rgba(237, 51, 59, 0.85);
+    color: white;
 }
 
 /* Calendar Grid */
@@ -146,5 +212,10 @@ popup-menu-item .bengali-date-popup {
     
     .bengali-calendar-day.today:hover {
         background-color: rgba(138, 226, 52, 0.3);
+    }
+
+    .bongabdo-calendar-day.today {
+        background-color: rgba(237, 51, 59, 0.75);
+        color: white;
     }
 }
