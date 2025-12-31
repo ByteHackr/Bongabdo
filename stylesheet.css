@@ -1,64 +1,130 @@
+/* Bongabdo Extension Stylesheet */
+
+/* Panel Label */
 .bengali-calendar-label {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
     font-size: 14px;
     padding: 0 8px;
     color: inherit;
+    font-weight: 500;
 }
 
+/* Popup Menu Items */
 .bengali-date-popup {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 16px;
     color: inherit;
+    text-align: center;
 }
 
 .gregorian-date-popup {
-    font-size: 12px;
-    padding: 4px 8px;
+    font-size: 13px;
+    padding: 8px 16px;
     color: inherit;
+    opacity: 0.8;
+    text-align: center;
 }
 
 .festivals-popup {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
-    font-size: 11px;
-    padding: 4px 8px;
+    font-size: 12px;
+    padding: 10px 16px;
     color: inherit;
     font-style: italic;
+    opacity: 0.85;
+    text-align: center;
 }
 
+/* Calendar Grid */
 .bengali-calendar-grid {
-    padding: 8px;
-    spacing: 4px;
+    padding: 12px 16px;
+    spacing: 8px;
+    min-width: 220px;
+    max-width: 240px;
 }
 
 .bengali-calendar-header {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 15px;
+    font-weight: 600;
     text-align: center;
-    padding: 4px;
+    padding: 8px 4px;
+    margin-bottom: 4px;
+    color: inherit;
+}
+
+.bengali-calendar-day-names-row {
+    spacing: 4px;
+    margin-bottom: 4px;
 }
 
 .bengali-calendar-day-name {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
-    font-size: 10px;
-    font-weight: bold;
-    min-width: 28px;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 30px;
+    max-width: 30px;
     text-align: center;
-    padding: 2px;
+    padding: 4px 2px;
+    color: inherit;
+    opacity: 0.7;
+}
+
+.bengali-calendar-weeks {
+    spacing: 3px;
+}
+
+.bengali-calendar-week-row {
+    spacing: 3px;
 }
 
 .bengali-calendar-day {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
-    font-size: 11px;
-    min-width: 28px;
+    font-size: 12px;
+    min-width: 30px;
+    max-width: 30px;
     text-align: center;
-    padding: 4px 2px;
+    padding: 6px 2px;
+    color: inherit;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.bengali-calendar-day.empty {
+    opacity: 0;
 }
 
 .bengali-calendar-day.today {
-    font-weight: bold;
-    background-color: rgba(78, 154, 6, 0.3);
-    border-radius: 4px;
+    font-weight: 700;
+    background-color: rgba(78, 154, 6, 0.25);
+    color: inherit;
+}
+
+.bengali-calendar-day.today:hover {
+    background-color: rgba(78, 154, 6, 0.35);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .bengali-calendar-day.today {
+        background-color: rgba(78, 154, 6, 0.5);
+        border: 1px solid currentColor;
+    }
+    
+    .bengali-date-popup {
+        font-weight: 700;
+    }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .bengali-calendar-day.today {
+        background-color: rgba(138, 226, 52, 0.2);
+    }
+    
+    .bengali-calendar-day.today:hover {
+        background-color: rgba(138, 226, 52, 0.3);
+    }
 }

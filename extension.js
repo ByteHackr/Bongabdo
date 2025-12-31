@@ -18,7 +18,6 @@ export default class BengaliCalendarExtension extends Extension {
         this._settings = this.getSettings();
         
         // Load Bengali month start dates mapping based on location
-        // Currently supports West Bengal Surya Siddhanta (default)
         const location = this._settings.get_string('location');
         this._monthStarts = this._loadMonthStarts(location);
 
@@ -69,15 +68,22 @@ export default class BengaliCalendarExtension extends Extension {
 
         this._indicator.add_child(this._panelLabel);
 
-        // Popup menu items
+        // Popup menu structure
         const menu = this._indicator.menu;
+
+        // Date section
+        const dateSection = new PopupMenu.PopupMenuSection();
+        menu.addMenuItem(new PopupMenu.PopupBaseMenuItem({
+            child: dateSection,
+            reactive: false
+        }));
 
         this._bengaliDateItem = new PopupMenu.PopupMenuItem('', {
             reactive: false,
             can_focus: false,
         });
         this._bengaliDateItem.label.add_style_class_name('bengali-date-popup');
-        menu.addMenuItem(this._bengaliDateItem);
+        dateSection.addMenuItem(this._bengaliDateItem);
 
         this._gregorianDateItem = new PopupMenu.PopupMenuItem('', {
             reactive: false,
@@ -85,8 +91,9 @@ export default class BengaliCalendarExtension extends Extension {
         });
         this._gregorianDateItem.label.add_style_class_name('gregorian-date-popup');
         this._gregorianDateItem.visible = false;
-        menu.addMenuItem(this._gregorianDateItem);
+        dateSection.addMenuItem(this._gregorianDateItem);
 
+        // Festivals section (with separator)
         this._festivalsItem = new PopupMenu.PopupMenuItem('', {
             reactive: false,
             can_focus: false,
@@ -95,7 +102,7 @@ export default class BengaliCalendarExtension extends Extension {
         this._festivalsItem.visible = false;
         menu.addMenuItem(this._festivalsItem);
 
-        // Month calendar section
+        // Calendar section (with separator)
         this._calendarMenuItem = new PopupMenu.PopupMenuItem('', {
             reactive: false,
             can_focus: false,
@@ -125,13 +132,11 @@ export default class BengaliCalendarExtension extends Extension {
 
     _loadMonthStarts(location = 'west-bengal') {
         // Bangladesh uses fixed calendar (April 14 = Pohela Boishakh always)
-        // So we return null to use heuristic method
         if (location === 'bangladesh') {
             return null;
         }
         
         // West Bengal and India use Surya Siddhanta (variable Sankranti dates)
-        // Load JSON mapping for accurate dates
         try {
             const jsonFile = this.dir.get_child('lib').get_child('bengaliMonthStarts.json');
             if (jsonFile.query_exists(null)) {
@@ -146,7 +151,6 @@ export default class BengaliCalendarExtension extends Extension {
             log(`Bongabdo: Failed to load month starts mapping: ${e.message}`);
         }
         
-        // Fallback to heuristic if JSON not available
         return null;
     }
 
@@ -165,7 +169,7 @@ export default class BengaliCalendarExtension extends Extension {
 
         this._calendarMenuItem.visible = true;
 
-        // Create calendar grid
+        // Create calendar container
         const box = new St.BoxLayout({
             vertical: true,
             style_class: 'bengali-calendar-grid'
@@ -178,7 +182,7 @@ export default class BengaliCalendarExtension extends Extension {
         });
         box.add_child(header);
 
-        // Day names row (horizontal layout)
+        // Day names row
         const dayNamesRow = new St.BoxLayout({
             vertical: false,
             style_class: 'bengali-calendar-day-names-row'
@@ -194,14 +198,11 @@ export default class BengaliCalendarExtension extends Extension {
         box.add_child(dayNamesRow);
 
         // Get current month's dates
-        // For Bangladesh (fixed calendar), we can calculate month boundaries directly
-        // For West Bengal/India (Surya Siddhanta), we need JSON mapping
         const now = new Date();
         const year = now.getFullYear();
         const yearStr = String(year);
         const prevYearStr = String(year - 1);
         
-        // Determine which year's data to use
         let yearData = null;
         if (this._monthStarts?.[yearStr] && this._monthStarts[yearStr][String(bengaliDate.month)]) {
             yearData = this._monthStarts[yearStr];
@@ -209,16 +210,14 @@ export default class BengaliCalendarExtension extends Extension {
             yearData = this._monthStarts[prevYearStr];
         }
         
-        // If no JSON mapping (Bangladesh), calculate month boundaries using fixed calendar
+        // Bangladesh fixed calendar calculation
         if (!yearData) {
-            // Bangladesh fixed calendar: calculate month start/end from Pohela Boishakh (Apr 14)
-            const pohelaBoishakh = new Date(year, 3, 14); // April 14
+            const pohelaBoishakh = new Date(year, 3, 14);
             const monthLengths = [31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30, 30];
             const bengaliYear = year - 593;
             const isLeapYear = (bengaliYear % 4 === 0 && bengaliYear % 100 !== 0) || (bengaliYear % 400 === 0);
             if (isLeapYear) monthLengths[11] = 32;
             
-            // Calculate cumulative days to find month start
             let cumulativeDays = 0;
             for (let i = 0; i < bengaliDate.month; i++) {
                 cumulativeDays += monthLengths[i];
@@ -227,75 +226,19 @@ export default class BengaliCalendarExtension extends Extension {
             const monthStart = new Date(pohelaBoishakh);
             monthStart.setDate(monthStart.getDate() + cumulativeDays);
             
-            const nextMonthStart = new Date(monthStart);
-            nextMonthStart.setDate(nextMonthStart.getDate() + monthLengths[bengaliDate.month]);
-            
             const daysInMonth = monthLengths[bengaliDate.month];
             const firstDayDate = new Date(monthStart);
             const firstDayOfWeek = firstDayDate.getDay();
             
-            // Build calendar grid
-            const grid = new St.BoxLayout({ 
-                vertical: true,
-                style_class: 'bengali-calendar-weeks'
-            });
-            
-            let currentDay = 1;
-            let weekRow = new St.BoxLayout({
-                vertical: false,
-                style_class: 'bengali-calendar-week-row'
-            });
-            
-            // Empty cells for days before month starts
-            for (let i = 0; i < firstDayOfWeek; i++) {
-                const empty = new St.Label({ text: '', style_class: 'bengali-calendar-day' });
-                weekRow.add_child(empty);
-            }
-            
-            // Add days
-            while (currentDay <= daysInMonth) {
-                if (weekRow.get_children().length === 7) {
-                    grid.add_child(weekRow);
-                    weekRow = new St.BoxLayout({
-                        vertical: false,
-                        style_class: 'bengali-calendar-week-row'
-                    });
-                }
-                
-                const dayNum = Bengali.formatNumber(currentDay, useBengaliNumerals);
-                const isToday = (currentDay === bengaliDate.day);
-                const dayLabel = new St.Label({
-                    text: dayNum,
-                    style_class: isToday ? 'bengali-calendar-day today' : 'bengali-calendar-day'
-                });
-                weekRow.add_child(dayLabel);
-                currentDay++;
-            }
-            
-            // Fill remaining week
-            while (weekRow.get_children().length < 7) {
-                const empty = new St.Label({ text: '', style_class: 'bengali-calendar-day' });
-                weekRow.add_child(empty);
-            }
-            if (weekRow.get_children().length > 0) {
-                grid.add_child(weekRow);
-            }
-            
+            const grid = this._buildCalendarGrid(daysInMonth, firstDayOfWeek, bengaliDate.day, useBengaliNumerals);
             box.add_child(grid);
             this._calendarBox = box;
             
-            // Clear existing content and add calendar
-            const children = this._calendarMenuItem.get_children();
-            children.forEach(child => {
-                if (child !== this._calendarMenuItem.label) {
-                    this._calendarMenuItem.remove_child(child);
-                }
-            });
-            this._calendarMenuItem.label.visible = false;
-            this._calendarMenuItem.add_child(box);
+            this._updateCalendarMenuItem(box);
             return;
         }
 
+        // West Bengal/India variable calendar (JSON mapping)
         const monthKey = String(bengaliDate.month);
         const nextMonthKey = String((bengaliDate.month + 1) % 12);
         const nextYearKey = bengaliDate.month === 11 ? String(year + 1) : yearStr;
@@ -303,7 +246,6 @@ export default class BengaliCalendarExtension extends Extension {
         const monthStartStr = yearData[monthKey];
         let nextMonthStartStr = yearData[nextMonthKey];
         
-        // If last month, get next year's Boishakh
         if (bengaliDate.month === 11 && this._monthStarts?.[nextYearKey]?.['0']) {
             nextMonthStartStr = this._monthStarts[nextYearKey]['0'];
         }
@@ -320,23 +262,25 @@ export default class BengaliCalendarExtension extends Extension {
 
         const monthStart = parseDate(monthStartStr);
         const nextMonthStart = parseDate(nextMonthStartStr);
-        
-        // Calculate days in month (Sankranti date is excluded, so +1 day)
         const daysInMonth = Math.floor((nextMonthStart - monthStart) / (1000 * 60 * 60 * 24));
-
-        // Find first day of week for the day AFTER Sankranti (first day of Bengali month)
-        // Sankranti date is excluded, so first day is monthStart + 1 day
         const firstDayDate = new Date(monthStart);
         firstDayDate.setDate(firstDayDate.getDate() + 1);
         const firstDayOfWeek = firstDayDate.getDay();
 
-        // Create calendar grid
+        const grid = this._buildCalendarGrid(daysInMonth, firstDayOfWeek, bengaliDate.day, useBengaliNumerals);
+        box.add_child(grid);
+        this._calendarBox = box;
+        
+        this._updateCalendarMenuItem(box);
+    }
+
+    _buildCalendarGrid(daysInMonth, firstDayOfWeek, currentDay, useBengaliNumerals) {
         const grid = new St.BoxLayout({ 
             vertical: true,
             style_class: 'bengali-calendar-weeks'
         });
         
-        let currentDay = 1;
+        let day = 1;
         let weekRow = new St.BoxLayout({
             vertical: false,
             style_class: 'bengali-calendar-week-row'
@@ -344,12 +288,12 @@ export default class BengaliCalendarExtension extends Extension {
         
         // Empty cells for days before month starts
         for (let i = 0; i < firstDayOfWeek; i++) {
-            const empty = new St.Label({ text: '', style_class: 'bengali-calendar-day' });
+            const empty = new St.Label({ text: '', style_class: 'bengali-calendar-day empty' });
             weekRow.add_child(empty);
         }
 
         // Add days
-        while (currentDay <= daysInMonth) {
+        while (day <= daysInMonth) {
             if (weekRow.get_children().length === 7) {
                 grid.add_child(weekRow);
                 weekRow = new St.BoxLayout({
@@ -358,37 +302,37 @@ export default class BengaliCalendarExtension extends Extension {
                 });
             }
 
-            const dayNum = Bengali.formatNumber(currentDay, useBengaliNumerals);
-            const isToday = (currentDay === bengaliDate.day);
+            const dayNum = Bengali.formatNumber(day, useBengaliNumerals);
+            const isToday = (day === currentDay);
             const dayLabel = new St.Label({
                 text: dayNum,
                 style_class: isToday ? 'bengali-calendar-day today' : 'bengali-calendar-day'
             });
             weekRow.add_child(dayLabel);
-            currentDay++;
+            day++;
         }
 
         // Fill remaining week
         while (weekRow.get_children().length < 7) {
-            const empty = new St.Label({ text: '', style_class: 'bengali-calendar-day' });
+            const empty = new St.Label({ text: '', style_class: 'bengali-calendar-day empty' });
             weekRow.add_child(empty);
         }
         if (weekRow.get_children().length > 0) {
             grid.add_child(weekRow);
         }
 
-        box.add_child(grid);
-        this._calendarBox = box;
-        
+        return grid;
+    }
+
+    _updateCalendarMenuItem(box) {
         // Clear existing content and add calendar
-        // PopupMenuItem is a St.BoxLayout, so we can add children directly
         const children = this._calendarMenuItem.get_children();
         children.forEach(child => {
             if (child !== this._calendarMenuItem.label) {
                 this._calendarMenuItem.remove_child(child);
             }
         });
-        this._calendarMenuItem.label.visible = false; // Hide the label
+        this._calendarMenuItem.label.visible = false;
         this._calendarMenuItem.add_child(box);
     }
 
@@ -413,9 +357,11 @@ export default class BengaliCalendarExtension extends Extension {
         );
         this._panelLabel.set_text(panelText);
 
+        // Update Bengali date display
         const fullDate = Bengali.formatBengaliDate(bengaliDate, dayName, 'full', useBengaliNumerals);
-        this._bengaliDateItem.label.set_text(`📅 ${fullDate}`);
+        this._bengaliDateItem.label.set_text(fullDate);
 
+        // Update Gregorian date
         const showGregorian = this._settings.get_boolean('show-gregorian');
         this._gregorianDateItem.visible = showGregorian;
         if (showGregorian) {
@@ -425,18 +371,16 @@ export default class BengaliCalendarExtension extends Extension {
                 month: 'long',
                 day: 'numeric',
             });
-            this._gregorianDateItem.label.set_text(`🌍 ${gregorianDateStr}`);
-        } else {
-            this._gregorianDateItem.label.set_text('');
+            this._gregorianDateItem.label.set_text(gregorianDateStr);
         }
 
+        // Update festivals
         const showFestivals = this._settings.get_boolean('show-festivals');
         const festivals = showFestivals ? Bengali.getFestivals(bengaliDate.month, bengaliDate.day) : [];
         if (showFestivals && festivals.length > 0) {
-            this._festivalsItem.label.set_text(`🎉 ${festivals.join(', ')}`);
+            this._festivalsItem.label.set_text(festivals.join(', '));
             this._festivalsItem.visible = true;
         } else {
-            this._festivalsItem.label.set_text('');
             this._festivalsItem.visible = false;
         }
 
