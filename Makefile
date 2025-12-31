@@ -38,6 +38,7 @@ zip: clean
 		-x "*build*" \
 		-x "*.md" \
 		-x "Makefile" \
+		-x "schemas/gschemas.compiled" \
 		-x "*.zip"
 	@echo "Extension packaged to build/$(UUID).zip"
 
