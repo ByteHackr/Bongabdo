@@ -19,6 +19,7 @@
     color: inherit;
     text-align: center;
     font-stretch: normal;
+    width: 100%;
 }
 
 /* Center align menu items */
@@ -28,6 +29,7 @@ popup-menu-item:first-child {
 
 popup-menu-item .bengali-date-popup {
     text-align: center;
+    x-align: 0.5;
 }
 
 .gregorian-date-popup {

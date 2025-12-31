@@ -3,7 +3,6 @@
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import St from 'gi://St';
-import Clutter from 'gi://Clutter';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -144,12 +143,6 @@ export default class BengaliCalendarExtension extends Extension {
 
             const fontSize = this._settings?.get_int('font-size') || 14;
             this._panelLabel.style = `font-size: ${fontSize}px;`;
-            
-            // Center align the label text
-            if (this._panelLabel.clutter_text) {
-                this._panelLabel.clutter_text.set_line_alignment(Clutter.TextAlignment.CENTER);
-            }
-            this._panelLabel.x_align = Clutter.ActorAlign.CENTER;
 
             this._indicator.add_child(this._panelLabel);
 
@@ -165,12 +158,8 @@ export default class BengaliCalendarExtension extends Extension {
                 can_focus: false,
             });
             this._bengaliDateItem.label.add_style_class_name('bengali-date-popup');
-            // Center align the label text
-            if (this._bengaliDateItem.label.clutter_text) {
-                this._bengaliDateItem.label.clutter_text.set_line_alignment(Clutter.TextAlignment.CENTER);
-            }
-            // Center the label within the menu item
-            this._bengaliDateItem.label.x_align = Clutter.ActorAlign.CENTER;
+            // Center align - CSS handles text-align: center
+            // x_align is set via CSS or can be set programmatically if needed
             menu.addMenuItem(this._bengaliDateItem);
 
             // Gregorian date item
@@ -179,10 +168,7 @@ export default class BengaliCalendarExtension extends Extension {
                 can_focus: false,
             });
             this._gregorianDateItem.label.add_style_class_name('gregorian-date-popup');
-            if (this._gregorianDateItem.label.clutter_text) {
-                this._gregorianDateItem.label.clutter_text.set_line_alignment(Clutter.TextAlignment.CENTER);
-            }
-            this._gregorianDateItem.label.x_align = Clutter.ActorAlign.CENTER;
+            // Center align - CSS handles text-align: center
             this._gregorianDateItem.visible = false;
             menu.addMenuItem(this._gregorianDateItem);
 
@@ -192,10 +178,7 @@ export default class BengaliCalendarExtension extends Extension {
                 can_focus: false,
             });
             this._festivalsItem.label.add_style_class_name('festivals-popup');
-            if (this._festivalsItem.label.clutter_text) {
-                this._festivalsItem.label.clutter_text.set_line_alignment(Clutter.TextAlignment.CENTER);
-            }
-            this._festivalsItem.label.x_align = Clutter.ActorAlign.CENTER;
+            // Center align - CSS handles text-align: center
             this._festivalsItem.visible = false;
             menu.addMenuItem(this._festivalsItem);
 
