@@ -1,5 +1,7 @@
 # Bongabdo (GNOME Shell)
 
+![Bongabdo Screenshot](screenshot.png)
+
 Show today’s **Bengali date** in the GNOME top bar, with an optional **month view** in the popup.
 
 - GNOME Shell: **45–49**
