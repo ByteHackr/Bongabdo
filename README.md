@@ -205,7 +205,6 @@ This project is licensed under the GPL-3.0 License - see the LICENSE file for de
 - ✨ Added customizable font size
 - ✨ Added panel position option
 - 🐛 Improved Bengali calendar conversion accuracy
-- 📝 Updated for GNOME Extensions store submission
 
 ### Version 1.0
 - 🎉 Initial release
