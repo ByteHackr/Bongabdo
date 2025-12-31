@@ -17,8 +17,10 @@ export default class BengaliCalendarExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
         
-        // Load Bengali month start dates mapping (West Bengal Surya Siddhanta)
-        this._monthStarts = this._loadMonthStarts();
+        // Load Bengali month start dates mapping based on location
+        // Currently supports West Bengal Surya Siddhanta (default)
+        const location = this._settings.get_string('location');
+        this._monthStarts = this._loadMonthStarts(location);
 
         this._createIndicator();
         this._addToPanel();
@@ -39,6 +41,11 @@ export default class BengaliCalendarExtension extends Extension {
             this._settings.connect('changed::show-festivals', () => this._updateDisplay()),
             this._settings.connect('changed::use-bengali-numerals', () => this._updateDisplay()),
             this._settings.connect('changed::show-month-calendar', () => this._updateDisplay()),
+            this._settings.connect('changed::location', () => {
+                const location = this._settings.get_string('location');
+                this._monthStarts = this._loadMonthStarts(location);
+                this._updateDisplay();
+            }),
             this._settings.connect('changed::font-size', () => {
                 const fontSize = this._settings.get_int('font-size');
                 this._panelLabel.style = `font-size: ${fontSize}px;`;
@@ -116,7 +123,9 @@ export default class BengaliCalendarExtension extends Extension {
         this._addToPanel();
     }
 
-    _loadMonthStarts() {
+    _loadMonthStarts(location = 'west-bengal') {
+        // Currently only West Bengal mapping is implemented
+        // Future: load different JSON files based on location
         try {
             const jsonFile = this.dir.get_child('lib').get_child('bengaliMonthStarts.json');
             if (jsonFile.query_exists(null)) {
