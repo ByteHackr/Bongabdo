@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="bengali-calendar">
-  <schema id="org.gnome.shell.extensions.bengali-calendar" path="/org/gnome/shell/extensions/bengali-calendar/">
+<schemalist gettext-domain="bongabdo">
+  <schema id="org.gnome.shell.extensions.bongabdo" path="/org/gnome/shell/extensions/bongabdo/">
     <key name="display-format" type="s">
       <default>'full'</default>
       <summary>Display Format</summary>
@@ -34,4 +34,5 @@
     </key>
   </schema>
 </schemalist>
+
 

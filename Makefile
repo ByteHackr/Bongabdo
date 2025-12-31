@@ -1,6 +1,6 @@
 # Makefile for Bengali Calendar GNOME Extension
 
-UUID = bengali-calendar@bengali-calendar.github.io
+UUID = bongabdo@bongabdo.github.io
 INSTALL_DIR = $(HOME)/.local/share/gnome-shell/extensions/$(UUID)
 SCHEMA_DIR = $(INSTALL_DIR)/schemas
 

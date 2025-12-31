@@ -1,6 +1,6 @@
-# Bengali Calendar (GNOME Shell)
+# Bongabdo (GNOME Shell)
 
-Shows Bengali date in the top panel with optional festivals and Gregorian date.
+A Simple Bengali Calendar Extension for Gnome Shell.
 
 - Formats: full, short, date-only, compact; Bengali or Western numerals.
 - Popup: Bengali date, optional Gregorian date, today’s festivals (toggle).
@@ -15,7 +15,7 @@ make install
 make enable
 # restart Shell (Alt+F2, r, Enter)
 ```
-Manual: copy repo to `~/.local/share/gnome-shell/extensions/bengali-calendar@bengali-calendar.github.io/` and run `glib-compile-schemas schemas/`.
+Manual: copy repo to `~/.local/share/gnome-shell/extensions/bongabdo@bongabdo.github.io/` and run `glib-compile-schemas schemas/`.
 
 ## Preferences
 Open GNOME Extensions app → gear icon, or right-click the indicator → Preferences.

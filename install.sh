@@ -1,7 +1,7 @@
 #!/bin/bash
 # Installation script for Bengali Calendar GNOME Extension
 
-UUID="bengali-calendar@bengali-calendar.github.io"
+UUID="bongabdo@bongabdo.github.io"
 EXTENSION_DIR="$HOME/.local/share/gnome-shell/extensions/$UUID"
 
 echo "Installing Bengali Calendar GNOME Extension..."

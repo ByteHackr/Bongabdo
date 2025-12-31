@@ -18,7 +18,7 @@ export default class BengaliCalendarExtension extends Extension {
         const positionSetting = this._settings.get_string('position');
         const panelBox = positionSetting === 'left' ? 'left' : 'right';
 
-        this._indicator = new PanelMenu.Button(0.0, _('Bengali Calendar'), false);
+        this._indicator = new PanelMenu.Button(0.0, _('Bongabdo'), false);
 
         this._panelLabel = new St.Label({
             text: '',

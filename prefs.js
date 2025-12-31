@@ -13,7 +13,7 @@ export default class BengaliCalendarPreferences extends ExtensionPreferences {
         window.set_default_size(520, 420);
 
         const page = new Adw.PreferencesPage({
-            title: _('Bengali Calendar'),
+            title: _('Bongabdo'),
         });
         window.add(page);
 
