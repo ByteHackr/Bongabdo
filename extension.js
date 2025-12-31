@@ -1,6 +1,7 @@
 /* -*- mode: js; js-indent-level: 2; indent-tabs-mode: nil -*- */
 
 import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
 import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -14,6 +15,9 @@ import * as Bengali from './lib/bengaliCalendar.js';
 export default class BengaliCalendarExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
+        
+        // Load Bengali month start dates mapping (West Bengal Surya Siddhanta)
+        this._monthStarts = this._loadMonthStarts();
 
         const positionSetting = this._settings.get_string('position');
         const panelBox = positionSetting === 'left' ? 'left' : 'right';
@@ -83,12 +87,30 @@ export default class BengaliCalendarExtension extends Extension {
         Main.panel.addToStatusArea(this.uuid, this._indicator, 0, panelBox);
     }
 
+    _loadMonthStarts() {
+        try {
+            const jsonFile = this.dir.get_child('lib').get_child('bengaliMonthStarts.json');
+            if (jsonFile.query_exists(null)) {
+                const [ok, contents] = jsonFile.load_contents(null);
+                if (ok) {
+                    const decoder = new TextDecoder();
+                    const jsonText = decoder.decode(contents);
+                    return JSON.parse(jsonText);
+                }
+            }
+        } catch (e) {
+            log(`Bongabdo: Failed to load month starts mapping: ${e.message}`);
+        }
+        return null; // Fallback to heuristic
+    }
+
     _updateDisplay() {
         const now = new Date();
         const bengaliDate = Bengali.gregorianToBengali(
             now.getFullYear(),
             now.getMonth() + 1,
-            now.getDate()
+            now.getDate(),
+            this._monthStarts
         );
 
         const dayName = Bengali.BENGALI_DAYS[now.getDay()];

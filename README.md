@@ -26,7 +26,7 @@ Open GNOME Extensions app → gear icon, or right-click the indicator → Prefer
 
 ## Notes
 - Font: any Bengali-capable font (Noto Sans Bengali recommended).
-- Calendar conversion is heuristic (fixed Pohela Boishakh on Apr 14; simple month lengths). For strict accuracy, a richer dataset/algorithm is needed.
+- **West Bengal Calendar**: Uses `lib/bengaliMonthStarts.json` mapping (West Bengal Surya Siddhanta). Update from Panjika each year for accuracy. Falls back to heuristic (Apr 14 = Pohela Boishakh) if JSON missing.
 
 ## License
 MIT.
