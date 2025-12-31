@@ -13,7 +13,7 @@ install: install-files compile-schemas
 
 install-files:
 	@mkdir -p $(INSTALL_DIR)
-	@cp -r extension.js metadata.json stylesheet.css prefs.js schemas lib $(INSTALL_DIR)/
+	@cp -r extension.js metadata.json stylesheet.css prefs.js schemas lib icon.svg icon-symbolic.svg $(INSTALL_DIR)/
 	@echo "Files copied to $(INSTALL_DIR)"
 	@echo "Note: Update lib/bengaliMonthStarts.json from Panjika each year for accurate West Bengal dates"
 
