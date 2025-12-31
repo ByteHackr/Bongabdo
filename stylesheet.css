@@ -12,28 +12,31 @@
 /* Popup Menu Items */
 .bengali-date-popup {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     padding: 12px 16px;
     color: inherit;
     text-align: center;
+    font-stretch: normal;
 }
 
 .gregorian-date-popup {
     font-size: 13px;
+    font-weight: 400;
     padding: 8px 16px;
     color: inherit;
-    opacity: 0.8;
+    opacity: 0.9;
     text-align: center;
 }
 
 .festivals-popup {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
     font-size: 12px;
+    font-weight: 400;
     padding: 10px 16px;
     color: inherit;
     font-style: italic;
-    opacity: 0.85;
+    opacity: 0.9;
     text-align: center;
 }
 
