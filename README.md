@@ -143,40 +143,15 @@ bengali-calendar@bengali-calendar.github.io/
 └── .gitignore
 ```
 
-## 🛠️ Development
+## 🔄 Updating the Extension
 
-### Building
-
+After installing updates:
 ```bash
-# Create zip package for distribution
-make zip
-```
-
-### Testing
-
-```bash
-# Install locally
+cd Bongabdo
+git pull
 make install
-
-# Enable extension
-make enable
-
-# Disable extension
-make disable
-
-# Uninstall
-make uninstall
+# Restart GNOME Shell (Alt+F2, type 'r', Enter)
 ```
-
-### Reloading Extension
-
-After making changes:
-```bash
-gnome-extensions disable bengali-calendar@bengali-calendar.github.io
-gnome-extensions enable bengali-calendar@bengali-calendar.github.io
-```
-
-Or restart GNOME Shell: `Alt+F2`, type `r`, Enter
 
 ## 🐛 Troubleshooting
 
@@ -201,13 +176,7 @@ Or restart GNOME Shell: `Alt+F2`, type `r`, Enter
 
 ## 📝 Contributing
 
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Contributions are welcome! Please open an issue or submit a pull request on [GitHub](https://github.com/ByteHackr/Bongabdo).
 
 ## 📄 License
 
@@ -218,33 +187,6 @@ This project is licensed under the GPL-3.0 License - see the LICENSE file for de
 - Bengali calendar conversion algorithm based on standard Bengali calendar rules
 - Inspired by the need for Bengali calendar support in GNOME Shell
 - Thanks to the GNOME Shell extension community
-
-## 📮 Submitting to GNOME Extensions Website
-
-To submit this extension to [extensions.gnome.org](https://extensions.gnome.org):
-
-1. **GitHub repository**: ✅ Created at https://github.com/ByteHackr/Bongabdo
-2. **metadata.json**: ✅ Updated with repository URL
-3. **Create a release**:
-   ```bash
-   make zip
-   # Upload build/bengali-calendar@bengali-calendar.github.io.zip
-   ```
-4. **Submit to extensions.gnome.org**:
-   - Go to [extensions.gnome.org/upload](https://extensions.gnome.org/upload)
-   - Upload the zip file
-   - Fill in description, screenshots, etc.
-   - Submit for review
-
-### Requirements for Store Submission
-
-- ✅ Proper UUID format
-- ✅ Valid metadata.json
-- ✅ GSettings schema properly defined
-- ✅ Preferences UI (prefs.js + prefs.ui)
-- ✅ README with installation instructions
-- ✅ License file
-- ✅ Works on supported GNOME Shell versions
 
 ## 🔗 Links
 
