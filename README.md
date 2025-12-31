@@ -3,9 +3,9 @@
 A Simple Bengali Calendar Extension for Gnome Shell.
 
 - Formats: full, short, date-only, compact; Bengali or Western numerals.
-- Popup: Bengali date, optional Gregorian date, today’s festivals (toggle).
-- Settings: format, numerals, show Gregorian, show festivals, font size, left/right panel position.
-- GNOME Shell 45–47.
+- Popup: Bengali date, optional Gregorian date, optional full-month Bengali calendar, today’s festivals (toggle).
+- Settings: format, numerals, location (West Bengal/India vs Bangladesh), show Gregorian, show festivals, font size, panel position (left/center/right), month calendar toggle.
+- GNOME Shell 45–49.
 
 ## Install
 ```bash
