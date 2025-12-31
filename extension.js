@@ -89,12 +89,12 @@ export default class BengaliCalendarExtension extends Extension {
         menu.addMenuItem(this._festivalsItem);
 
         // Month calendar section
-        this._calendarSection = new PopupMenu.PopupMenuSection();
+        this._calendarMenuItem = new PopupMenu.PopupMenuItem('', {
+            reactive: false,
+            can_focus: false,
+        });
         this._calendarBox = null;
-        menu.addMenuItem(new PopupMenu.PopupBaseMenuItem({
-            child: this._calendarSection,
-            reactive: false
-        }));
+        menu.addMenuItem(this._calendarMenuItem);
     }
 
     _addToPanel() {
@@ -142,11 +142,11 @@ export default class BengaliCalendarExtension extends Extension {
 
         const showCalendar = this._settings.get_boolean('show-month-calendar');
         if (!showCalendar) {
-            this._calendarSection.visible = false;
+            this._calendarMenuItem.visible = false;
             return;
         }
 
-        this._calendarSection.visible = true;
+        this._calendarMenuItem.visible = true;
 
         // Create calendar grid
         const box = new St.BoxLayout({
@@ -188,7 +188,7 @@ export default class BengaliCalendarExtension extends Extension {
         }
         
         if (!yearData) {
-            this._calendarSection.visible = false;
+            this._calendarMenuItem.visible = false;
             return;
         }
 
@@ -205,7 +205,7 @@ export default class BengaliCalendarExtension extends Extension {
         }
 
         if (!monthStartStr || !nextMonthStartStr) {
-            this._calendarSection.visible = false;
+            this._calendarMenuItem.visible = false;
             return;
         }
 
@@ -266,7 +266,17 @@ export default class BengaliCalendarExtension extends Extension {
 
         box.add_child(grid);
         this._calendarBox = box;
-        this._calendarSection.add_child(box);
+        
+        // Clear existing content and add calendar
+        // PopupMenuItem is a St.BoxLayout, so we can add children directly
+        const children = this._calendarMenuItem.get_children();
+        children.forEach(child => {
+            if (child !== this._calendarMenuItem.label) {
+                this._calendarMenuItem.remove_child(child);
+            }
+        });
+        this._calendarMenuItem.label.visible = false; // Hide the label
+        this._calendarMenuItem.add_child(box);
     }
 
     _updateDisplay() {
@@ -342,7 +352,7 @@ export default class BengaliCalendarExtension extends Extension {
         this._gregorianDateItem = null;
         this._festivalsItem = null;
         this._calendarBox = null;
-        this._calendarSection = null;
+        this._calendarMenuItem = null;
         this._settings = null;
     }
 }
