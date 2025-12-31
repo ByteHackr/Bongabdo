@@ -21,6 +21,8 @@ Assert.assertEquals(Bengali.BENGALI_DAYS.length, 7, 'should have 7 days');
 Assert.assertEquals(Bengali.BENGALI_NUMERALS.length, 10, 'should have 10 numerals');
 Assert.assertTruthy(Bengali.BENGALI_MONTHS[0] === 'বৈশাখ', 'first month should be Boishakh');
 Assert.assertTruthy(Bengali.BENGALI_DAYS[0] === 'রবিবার', 'first day should be Sunday');
+Assert.assertTruthy(Bengali.BENGALI_DAYS[4] === 'বৃহস্পতিবার', 'index 4 should be Thursday');
+Assert.assertTruthy(Bengali.BENGALI_DAYS[5] === 'শুক্রবার', 'index 5 should be Friday');
 
 // ===== Festival Lookup Tests =====
 const festivalsPohela = Bengali.getFestivals(0, 1);
