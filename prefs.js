@@ -3,9 +3,10 @@
 
 const { GObject, Gtk, Gio } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
+const _ = ExtensionUtils.gettext;
 
 function init() {
-    ExtensionUtils.initTranslations();
+    ExtensionUtils.initTranslations('bengali-calendar');
 }
 
 function buildPrefsWidget() {
@@ -21,15 +22,15 @@ function buildPrefsWidget() {
     // Display Format
     let row = 0;
     widget.attach(new Gtk.Label({
-        label: 'Display Format:',
+        label: _('Display Format:'),
         halign: Gtk.Align.START
     }), 0, row, 1, 1);
     
     const displayFormatCombo = new Gtk.ComboBoxText();
-    displayFormatCombo.append('full', 'Full (Day, Date Month Year)');
-    displayFormatCombo.append('short', 'Short (Date Month)');
-    displayFormatCombo.append('date-only', 'Date Only (Date Month Year)');
-    displayFormatCombo.append('compact', 'Compact (DD/MM/YYYY)');
+    displayFormatCombo.append('full', _('Full (Day, Date Month Year)'));
+    displayFormatCombo.append('short', _('Short (Date Month)'));
+    displayFormatCombo.append('date-only', _('Date Only (Date Month Year)'));
+    displayFormatCombo.append('compact', _('Compact (DD/MM/YYYY)'));
     displayFormatCombo.set_active_id(settings.get_string('display-format'));
     displayFormatCombo.connect('changed', (widget) => {
         settings.set_string('display-format', widget.get_active_id());
@@ -39,7 +40,7 @@ function buildPrefsWidget() {
     // Show Gregorian Date
     row++;
     widget.attach(new Gtk.Label({
-        label: 'Show Gregorian Date in Popup:',
+        label: _('Show Gregorian Date in Popup:'),
         halign: Gtk.Align.START
     }), 0, row, 1, 1);
     
@@ -55,7 +56,7 @@ function buildPrefsWidget() {
     // Show Festivals
     row++;
     widget.attach(new Gtk.Label({
-        label: 'Show Festivals and Holidays:',
+        label: _('Show Festivals and Holidays:'),
         halign: Gtk.Align.START
     }), 0, row, 1, 1);
     
@@ -71,7 +72,7 @@ function buildPrefsWidget() {
     // Use Bengali Numerals
     row++;
     widget.attach(new Gtk.Label({
-        label: 'Use Bengali Numerals (০-৯):',
+        label: _('Use Bengali Numerals (০-৯):'),
         halign: Gtk.Align.START
     }), 0, row, 1, 1);
     
@@ -87,7 +88,7 @@ function buildPrefsWidget() {
     // Font Size
     row++;
     widget.attach(new Gtk.Label({
-        label: 'Font Size:',
+        label: _('Font Size:'),
         halign: Gtk.Align.START
     }), 0, row, 1, 1);
     
@@ -108,13 +109,13 @@ function buildPrefsWidget() {
     // Panel Position
     row++;
     widget.attach(new Gtk.Label({
-        label: 'Panel Position:',
+        label: _('Panel Position:'),
         halign: Gtk.Align.START
     }), 0, row, 1, 1);
     
     const positionCombo = new Gtk.ComboBoxText();
-    positionCombo.append('left', 'Left');
-    positionCombo.append('right', 'Right');
+    positionCombo.append('left', _('Left'));
+    positionCombo.append('right', _('Right'));
     positionCombo.set_active_id(settings.get_string('position'));
     positionCombo.connect('changed', (widget) => {
         settings.set_string('position', widget.get_active_id());

@@ -8,6 +8,7 @@ const PopupMenu = imports.ui.popupMenu;
 
 // Extension imports
 const ExtensionUtils = imports.misc.extensionUtils;
+const _ = ExtensionUtils.gettext;
 const Me = ExtensionUtils.getCurrentExtension();
 const Bengali = Me.imports.lib.bengaliCalendar;
 
@@ -17,14 +18,16 @@ let bengaliCalendarIndicator;
 let settings;
 
 function init() {
-    // Initialize settings
+    // Initialize translations and settings
+    ExtensionUtils.initTranslations('bengali-calendar');
     settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.bengali-calendar');
 }
 
 function enable() {
     // Create indicator
-    const position = settings.get_string('position') === 'left' ? 0.0 : 1.0;
-    bengaliCalendarIndicator = new PanelMenu.Button(position, 'Bengali Calendar', false);
+    const positionSetting = settings.get_string('position');
+    const panelBox = positionSetting === 'left' ? 'left' : 'right';
+    bengaliCalendarIndicator = new PanelMenu.Button(0.0, _('Bengali Calendar'), false);
     
     // Create label for Bengali date
     const label = new St.Label({
@@ -34,41 +37,38 @@ function enable() {
     
     // Apply font size from settings
     const fontSize = settings.get_int('font-size');
-    label.style = `font-size: ${fontSize}pt;`;
+    label.style = `font-size: ${fontSize}px;`;
     
     bengaliCalendarIndicator.add_child(label);
     
     // Create popup menu
     const menu = bengaliCalendarIndicator.menu;
     
-    // Bengali date section
-    const bengaliDateSection = new PopupMenu.PopupMenuSection();
-    const bengaliDateLabel = new St.Label({
-        text: '',
-        style_class: 'bengali-date-popup'
+    // Bengali date item
+    const bengaliDateItem = new PopupMenu.PopupMenuItem('', {
+        reactive: false,
+        can_focus: false
     });
-    bengaliDateSection.addActor(bengaliDateLabel);
-    menu.addMenuItem(new PopupMenu.PopupBaseMenuItem({ activate: false }));
-    menu.addMenuItem(new PopupMenu.PopupBaseMenuItem({ 
-        child: bengaliDateSection,
-        reactive: false 
-    }));
-    
-    // Gregorian date section (if enabled)
-    const gregorianDateLabel = new St.Label({
-        text: '',
-        style_class: 'gregorian-date-popup'
+    bengaliDateItem.label.set_style_class_name('bengali-date-popup');
+    menu.addMenuItem(bengaliDateItem);
+
+    // Gregorian date item (toggled via settings)
+    const gregorianDateItem = new PopupMenu.PopupMenuItem('', {
+        reactive: false,
+        can_focus: false
     });
-    const gregorianDateSection = new PopupMenu.PopupMenuSection();
-    gregorianDateSection.addActor(gregorianDateLabel);
-    
-    // Festivals section
-    const festivalsLabel = new St.Label({
-        text: '',
-        style_class: 'festivals-popup'
+    gregorianDateItem.label.set_style_class_name('gregorian-date-popup');
+    menu.addMenuItem(gregorianDateItem);
+    gregorianDateItem.visible = false;
+
+    // Festivals item (toggled via settings)
+    const festivalsItem = new PopupMenu.PopupMenuItem('', {
+        reactive: false,
+        can_focus: false
     });
-    const festivalsSection = new PopupMenu.PopupMenuSection();
-    festivalsSection.addActor(festivalsLabel);
+    festivalsItem.label.set_style_class_name('festivals-popup');
+    menu.addMenuItem(festivalsItem);
+    festivalsItem.visible = false;
     
     // Update function
     function updateDisplay() {
@@ -89,53 +89,33 @@ function enable() {
         
         // Update popup menu
         const fullDate = Bengali.formatBengaliDate(bengaliDate, dayName, 'full', useBengaliNumerals);
-        bengaliDateLabel.set_text(`📅 ${fullDate}`);
+        bengaliDateItem.label.text = `📅 ${fullDate}`;
         
         // Update Gregorian date if enabled
-        if (settings.get_boolean('show-gregorian')) {
+        const showGregorian = settings.get_boolean('show-gregorian');
+        gregorianDateItem.visible = showGregorian;
+        if (showGregorian) {
             const gregorianDateStr = now.toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
-            gregorianDateLabel.set_text(`🌍 ${gregorianDateStr}`);
-            if (!menu._gregorianAdded) {
-                menu.addMenuItem(new PopupMenu.PopupBaseMenuItem({ 
-                    child: gregorianDateSection,
-                    reactive: false 
-                }));
-                menu._gregorianAdded = true;
-            }
-            gregorianDateSection.visible = true;
+            gregorianDateItem.label.text = `🌍 ${gregorianDateStr}`;
         } else {
-            if (menu._gregorianAdded) {
-                gregorianDateSection.visible = false;
-            }
+            gregorianDateItem.label.text = '';
         }
         
         // Update festivals if enabled
-        if (settings.get_boolean('show-festivals')) {
+        const showFestivals = settings.get_boolean('show-festivals');
+        const festivals = showFestivals ? Bengali.getFestivals(bengaliDate.month, bengaliDate.day) : [];
+        if (showFestivals && festivals.length > 0) {
             const festivals = Bengali.getFestivals(bengaliDate.month, bengaliDate.day);
-            if (festivals.length > 0) {
-                festivalsLabel.set_text(`🎉 ${festivals.join(', ')}`);
-                if (!menu._festivalsAdded) {
-                    menu.addMenuItem(new PopupMenu.PopupBaseMenuItem({ 
-                        child: festivalsSection,
-                        reactive: false 
-                    }));
-                    menu._festivalsAdded = true;
-                }
-                festivalsSection.visible = true;
-            } else {
-                if (menu._festivalsAdded) {
-                    festivalsSection.visible = false;
-                }
-            }
+            festivalsItem.label.text = `🎉 ${festivals.join(', ')}`;
+            festivalsItem.visible = true;
         } else {
-            if (menu._festivalsAdded) {
-                festivalsSection.visible = false;
-            }
+            festivalsItem.label.text = '';
+            festivalsItem.visible = false;
         }
     }
     
@@ -163,16 +143,16 @@ function enable() {
         settings.connect('changed::use-bengali-numerals', updateDisplay),
         settings.connect('changed::font-size', () => {
             const fontSize = settings.get_int('font-size');
-            label.style = `font-size: ${fontSize}pt;`;
+            label.style = `font-size: ${fontSize}px;`;
         }),
         settings.connect('changed::position', () => {
-            // Note: Position change requires extension reload
+            // Note: Position change requires extension reload to move panel box
             updateDisplay();
         })
     ];
     
     // Add to panel
-    Main.panel.addToStatusArea('bengali-calendar', bengaliCalendarIndicator);
+    Main.panel.addToStatusArea('bengali-calendar', bengaliCalendarIndicator, 0, panelBox);
 }
 
 function disable() {

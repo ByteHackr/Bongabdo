@@ -6,6 +6,7 @@ const Bengali = imports.bengaliCalendar;
 // Numerals
 Assert.assertEquals(Bengali.toBengaliNumerals(0), '০', '0 should be ০');
 Assert.assertEquals(Bengali.toBengaliNumerals(1234567890), '১২৩৪৫৬৭৮৯০');
+Assert.assertEquals(Bengali.toBengaliNumerals(-42), '-৪২', 'negative numbers keep sign');
 
 // formatNumber
 Assert.assertEquals(Bengali.formatNumber(42, false), '42');
@@ -35,5 +36,14 @@ for (const [y, m, d] of [
   Assert.assert(bd.day >= 1 && bd.day <= 31, `day out of range for ${y}-${m}-${d}`);
   Assert.assertTruthy(typeof bd.monthName === 'string' && bd.monthName.length > 0, 'monthName required');
 }
+
+// Compact format should honor numeral preference for month/day/year
+const sampleDate = new Date(2024, 3, 14); // April 14 2024
+const sampleDayName = Bengali.BENGALI_DAYS[sampleDate.getDay()];
+const sampleBengali = Bengali.gregorianToBengali(sampleDate.getFullYear(), sampleDate.getMonth() + 1, sampleDate.getDate());
+const compact = Bengali.formatBengaliDate(sampleBengali, sampleDayName, 'compact', false);
+Assert.assertTruthy(compact.includes('/'), 'compact should use / separators');
+const compactBn = Bengali.formatBengaliDate(sampleBengali, sampleDayName, 'compact', true);
+Assert.assertTruthy(compactBn.match(/[০-৯]/), 'compact should use Bengali numerals');
 
 
