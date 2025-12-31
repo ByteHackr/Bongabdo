@@ -152,27 +152,22 @@ export default class BengaliCalendarExtension extends Extension {
                 throw new Error('Failed to get menu from indicator');
             }
 
-            // Date section
-            const dateSection = new PopupMenu.PopupMenuSection();
-            menu.addMenuItem(new PopupMenu.PopupBaseMenuItem({
-                child: dateSection,
-                reactive: false
-            }));
-
+            // Bengali date item
             this._bengaliDateItem = new PopupMenu.PopupMenuItem('', {
                 reactive: false,
                 can_focus: false,
             });
             this._bengaliDateItem.label.add_style_class_name('bengali-date-popup');
-            dateSection.addMenuItem(this._bengaliDateItem);
+            menu.addMenuItem(this._bengaliDateItem);
 
+            // Gregorian date item
             this._gregorianDateItem = new PopupMenu.PopupMenuItem('', {
                 reactive: false,
                 can_focus: false,
             });
             this._gregorianDateItem.label.add_style_class_name('gregorian-date-popup');
             this._gregorianDateItem.visible = false;
-            dateSection.addMenuItem(this._gregorianDateItem);
+            menu.addMenuItem(this._gregorianDateItem);
 
             // Festivals section
             this._festivalsItem = new PopupMenu.PopupMenuItem('', {
