@@ -158,6 +158,8 @@ export default class BengaliCalendarExtension extends Extension {
                 can_focus: false,
             });
             this._bengaliDateItem.label.add_style_class_name('bengali-date-popup');
+            // Ensure the label can take full row width so CSS `text-align: center` works.
+            this._bengaliDateItem.label.x_expand = true;
             // Center align - CSS handles text-align: center
             // x_align is set via CSS or can be set programmatically if needed
             menu.addMenuItem(this._bengaliDateItem);
@@ -168,6 +170,7 @@ export default class BengaliCalendarExtension extends Extension {
                 can_focus: false,
             });
             this._gregorianDateItem.label.add_style_class_name('gregorian-date-popup');
+            this._gregorianDateItem.label.x_expand = true;
             // Center align - CSS handles text-align: center
             this._gregorianDateItem.visible = false;
             menu.addMenuItem(this._gregorianDateItem);
@@ -178,6 +181,7 @@ export default class BengaliCalendarExtension extends Extension {
                 can_focus: false,
             });
             this._festivalsItem.label.add_style_class_name('festivals-popup');
+            this._festivalsItem.label.x_expand = true;
             // Center align - CSS handles text-align: center
             this._festivalsItem.visible = false;
             menu.addMenuItem(this._festivalsItem);
@@ -206,15 +210,10 @@ export default class BengaliCalendarExtension extends Extension {
         }
 
         try {
-            const positionSetting = this._settings?.get_string('position') || 'right';
-            let panelBox = 'right';
-            if (positionSetting === 'left') {
-                panelBox = 'left';
-            } else if (positionSetting === 'center') {
-                panelBox = 'center';
-            }
-            
-            Main.panel.addToStatusArea(this.uuid, this._indicator, 0, panelBox);
+            // Register in status area once; then we manually move the indicator container
+            // between panel boxes for reliable positioning across Shell versions.
+            Main.panel.addToStatusArea(this.uuid, this._indicator, 0, 'right');
+            this._repositionIndicator();
         } catch (e) {
             logError(e, 'Error adding indicator to panel');
         }
@@ -230,11 +229,29 @@ export default class BengaliCalendarExtension extends Extension {
         }
 
         try {
-            const parent = this._indicator.get_parent();
+            const positionSetting = this._settings?.get_string('position') || 'right';
+
+            // `addToStatusArea()` inserts the *container* into the panel boxes.
+            const container = this._indicator.container ?? this._indicator;
+            const parent = container?.get_parent?.();
             if (parent) {
-                parent.remove_child(this._indicator);
+                parent.remove_child(container);
             }
-            this._addToPanel();
+
+            let targetBox = Main.panel?._rightBox;
+            if (positionSetting === 'left')
+                targetBox = Main.panel?._leftBox;
+            else if (positionSetting === 'center')
+                targetBox = Main.panel?._centerBox;
+
+            if (!targetBox?.insert_child_at_index) {
+                // Fallback to original API if private boxes are unavailable.
+                Main.panel.addToStatusArea(this.uuid, this._indicator, 0, positionSetting);
+                return;
+            }
+
+            // Put it at the start of that box (left-most within that box).
+            targetBox.insert_child_at_index(container, 0);
         } catch (e) {
             logError(e, 'Error repositioning indicator');
         }
