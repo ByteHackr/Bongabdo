@@ -60,6 +60,15 @@ popup-menu-item .bengali-date-popup {
     min-width: 260px;
 }
 
+.bongabdo-calendar-menuitem {
+    /* Remove PopupMenuItem default padding so the calendar can be truly centered */
+    padding: 0;
+}
+
+.bongabdo-calendar-wrapper {
+    width: 100%;
+}
+
 .bongabdo-calendar-header-row {
     spacing: 6px;
     padding: 2px 2px;

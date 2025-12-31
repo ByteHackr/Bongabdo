@@ -213,6 +213,7 @@ export default class BengaliCalendarExtension extends Extension {
                 reactive: false,
                 can_focus: false,
             });
+            this._calendarMenuItem.add_style_class_name('bongabdo-calendar-menuitem');
             this._calendarBox = null;
             menu.addMenuItem(this._calendarMenuItem);
         } catch (e) {
@@ -831,7 +832,19 @@ export default class BengaliCalendarExtension extends Extension {
             if (this._calendarMenuItem.label) {
                 this._calendarMenuItem.label.visible = false;
             }
-            this._calendarMenuItem.add_child(box);
+
+            // Ensure the calendar is visually centered within the popup menu row.
+            // PopupMenuItem has default paddings/packing that can make the content look shifted.
+            const wrapper = new St.BoxLayout({
+                x_expand: true,
+                x_align: Clutter.ActorAlign.CENTER,
+                style_class: 'bongabdo-calendar-wrapper',
+            });
+            // Center the calendar box itself inside the wrapper.
+            box.x_align = Clutter.ActorAlign.CENTER;
+            wrapper.add_child(box);
+
+            this._calendarMenuItem.add_child(wrapper);
         } catch (e) {
             logError(e, 'Error updating calendar menu item');
         }
