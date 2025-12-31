@@ -5,6 +5,7 @@ import Gio from 'gi://Gio';
 import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as Calendar from 'resource:///org/gnome/shell/ui/calendar.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
@@ -35,6 +36,9 @@ export default class BengaliCalendarExtension extends Extension {
             // Load Bengali month start dates mapping based on location
             const location = this._settings.get_string('location');
             this._monthStarts = this._loadMonthStarts(location);
+            // GNOME Shell built-in calendar widget (for default look)
+            this._shellCalendar = null;
+            this._shellCalendarContainer = null;
 
             this._createIndicator();
             if (!this._indicator) {
@@ -340,7 +344,12 @@ export default class BengaliCalendarExtension extends Extension {
         // Remove old calendar if exists
         if (this._calendarBox) {
             try {
-                this._calendarBox.destroy();
+                // Do not destroy the shared GNOME Shell calendar container; reuse it.
+                if (this._shellCalendarContainer && this._calendarBox === this._shellCalendarContainer) {
+                    // noop
+                } else {
+                    this._calendarBox.destroy();
+                }
             } catch (e) {
                 logError(e, 'Error destroying old calendar');
             }
@@ -357,6 +366,43 @@ export default class BengaliCalendarExtension extends Extension {
 
         try {
             this._calendarMenuItem.visible = true;
+
+            // Preferred: GNOME Shell built-in calendar widget (matches the default date menu).
+            // If this fails (API changes across Shell versions), fall back to our Bengali grid.
+            try {
+                if (!this._shellCalendarContainer) {
+                    this._shellCalendarContainer = new St.BoxLayout({
+                        vertical: true,
+                        style_class: 'bongabdo-shell-calendar-container',
+                    });
+                }
+
+                if (!this._shellCalendar) {
+                    this._shellCalendar = new Calendar.Calendar();
+                }
+
+                const actor = this._shellCalendar?.actor ?? this._shellCalendar;
+                if (actor?.get_parent?.())
+                    actor.get_parent().remove_child(actor);
+
+                const existingChildren = this._shellCalendarContainer.get_children?.() ?? [];
+                existingChildren.forEach(child => {
+                    try {
+                        this._shellCalendarContainer.remove_child(child);
+                    } catch (e) {
+                        // ignore
+                    }
+                });
+
+                if (actor)
+                    this._shellCalendarContainer.add_child(actor);
+
+                this._calendarBox = this._shellCalendarContainer;
+                this._updateCalendarMenuItem(this._shellCalendarContainer);
+                return;
+            } catch (e) {
+                logError(e, 'Bongabdo: Failed to create Shell calendar widget, falling back');
+            }
 
             // Create calendar container
             const box = new St.BoxLayout({
@@ -748,6 +794,15 @@ export default class BengaliCalendarExtension extends Extension {
             }
             this._calendarBox = null;
         }
+        if (this._shellCalendarContainer) {
+            try {
+                this._shellCalendarContainer.destroy();
+            } catch (e) {
+                logError(e, 'Error destroying shell calendar container');
+            }
+            this._shellCalendarContainer = null;
+        }
+        this._shellCalendar = null;
 
         // Destroy indicator
         if (this._indicator) {

@@ -52,6 +52,11 @@ popup-menu-item .bengali-date-popup {
     text-align: center;
 }
 
+/* GNOME Shell default calendar container (used in the system date menu) */
+.bongabdo-shell-calendar-container {
+    padding: 6px 10px 10px 10px;
+}
+
 /* Calendar Grid */
 .bengali-calendar-grid {
     padding: 12px 16px;
