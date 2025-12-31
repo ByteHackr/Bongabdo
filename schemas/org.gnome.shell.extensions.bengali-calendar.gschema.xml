@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="bengali-calendar">
+  <schema id="org.gnome.shell.extensions.bengali-calendar" path="/org/gnome/shell/extensions/bengali-calendar/">
+    <key name="display-format" type="s">
+      <default>'full'</default>
+      <summary>Display Format</summary>
+      <description>Format for displaying Bengali date in panel: 'full', 'short', 'date-only', 'compact'</description>
+    </key>
+    <key name="show-gregorian" type="b">
+      <default>false</default>
+      <summary>Show Gregorian Date</summary>
+      <description>Show Gregorian date alongside Bengali date in popup menu</description>
+    </key>
+    <key name="show-festivals" type="b">
+      <default>true</default>
+      <summary>Show Festivals</summary>
+      <description>Display Bengali festivals and holidays in popup menu</description>
+    </key>
+    <key name="use-bengali-numerals" type="b">
+      <default>true</default>
+      <summary>Use Bengali Numerals</summary>
+      <description>Display numbers using Bengali numerals (০-৯) instead of Western numerals</description>
+    </key>
+    <key name="font-size" type="i">
+      <default>12</default>
+      <summary>Font Size</summary>
+      <description>Font size for Bengali date display in pixels</description>
+      <range min="8" max="24"/>
+    </key>
+    <key name="position" type="s">
+      <default>'right'</default>
+      <summary>Panel Position</summary>
+      <description>Position in panel: 'left' or 'right'</description>
+    </key>
+  </schema>
+</schemalist>
+

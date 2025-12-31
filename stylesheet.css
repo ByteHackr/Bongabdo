@@ -1,0 +1,28 @@
+.bengali-calendar-label {
+    font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
+    font-size: 12pt;
+    padding: 0 8px;
+    color: inherit;
+}
+
+.bengali-date-popup {
+    font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
+    font-size: 14pt;
+    font-weight: bold;
+    padding: 8px;
+    color: inherit;
+}
+
+.gregorian-date-popup {
+    font-size: 12pt;
+    padding: 4px 8px;
+    color: inherit;
+}
+
+.festivals-popup {
+    font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
+    font-size: 11pt;
+    padding: 4px 8px;
+    color: inherit;
+    font-style: italic;
+}
