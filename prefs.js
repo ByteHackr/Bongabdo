@@ -1,127 +1,106 @@
 /* -*- mode: js; js-indent-level: 2; indent-tabs-mode: nil -*- */
-/* exported init buildPrefsWidget */
 
-const { GObject, Gtk, Gio } = imports.gi;
-const ExtensionUtils = imports.misc.extensionUtils;
-const _ = ExtensionUtils.gettext;
+import Adw from 'gi://Adw';
+import Gio from 'gi://Gio';
+import Gtk from 'gi://Gtk';
 
-function init() {
-    ExtensionUtils.initTranslations('bengali-calendar');
-}
+import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/shell/extensions/prefs.js';
 
-function buildPrefsWidget() {
-    const widget = new Gtk.Grid({
-        margin: 20,
-        row_spacing: 12,
-        column_spacing: 12,
-        column_homogeneous: false
-    });
-    
-    const settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.bengali-calendar');
-    
-    // Display Format
-    let row = 0;
-    widget.attach(new Gtk.Label({
-        label: _('Display Format:'),
-        halign: Gtk.Align.START
-    }), 0, row, 1, 1);
-    
-    const displayFormatCombo = new Gtk.ComboBoxText();
-    displayFormatCombo.append('full', _('Full (Day, Date Month Year)'));
-    displayFormatCombo.append('short', _('Short (Date Month)'));
-    displayFormatCombo.append('date-only', _('Date Only (Date Month Year)'));
-    displayFormatCombo.append('compact', _('Compact (DD/MM/YYYY)'));
-    displayFormatCombo.set_active_id(settings.get_string('display-format'));
-    displayFormatCombo.connect('changed', (widget) => {
-        settings.set_string('display-format', widget.get_active_id());
-    });
-    widget.attach(displayFormatCombo, 1, row, 1, 1);
-    
-    // Show Gregorian Date
-    row++;
-    widget.attach(new Gtk.Label({
-        label: _('Show Gregorian Date in Popup:'),
-        halign: Gtk.Align.START
-    }), 0, row, 1, 1);
-    
-    const showGregorianSwitch = new Gtk.Switch({
-        halign: Gtk.Align.END,
-        active: settings.get_boolean('show-gregorian')
-    });
-    showGregorianSwitch.connect('notify::active', (widget) => {
-        settings.set_boolean('show-gregorian', widget.active);
-    });
-    widget.attach(showGregorianSwitch, 1, row, 1, 1);
-    
-    // Show Festivals
-    row++;
-    widget.attach(new Gtk.Label({
-        label: _('Show Festivals and Holidays:'),
-        halign: Gtk.Align.START
-    }), 0, row, 1, 1);
-    
-    const showFestivalsSwitch = new Gtk.Switch({
-        halign: Gtk.Align.END,
-        active: settings.get_boolean('show-festivals')
-    });
-    showFestivalsSwitch.connect('notify::active', (widget) => {
-        settings.set_boolean('show-festivals', widget.active);
-    });
-    widget.attach(showFestivalsSwitch, 1, row, 1, 1);
-    
-    // Use Bengali Numerals
-    row++;
-    widget.attach(new Gtk.Label({
-        label: _('Use Bengali Numerals (০-৯):'),
-        halign: Gtk.Align.START
-    }), 0, row, 1, 1);
-    
-    const useBengaliNumeralsSwitch = new Gtk.Switch({
-        halign: Gtk.Align.END,
-        active: settings.get_boolean('use-bengali-numerals')
-    });
-    useBengaliNumeralsSwitch.connect('notify::active', (widget) => {
-        settings.set_boolean('use-bengali-numerals', widget.active);
-    });
-    widget.attach(useBengaliNumeralsSwitch, 1, row, 1, 1);
-    
-    // Font Size
-    row++;
-    widget.attach(new Gtk.Label({
-        label: _('Font Size:'),
-        halign: Gtk.Align.START
-    }), 0, row, 1, 1);
-    
-    const fontSizeSpin = new Gtk.SpinButton({
-        adjustment: new Gtk.Adjustment({
-            lower: 8,
-            upper: 24,
-            step_increment: 1,
-            value: settings.get_int('font-size')
-        }),
-        halign: Gtk.Align.END
-    });
-    fontSizeSpin.connect('value-changed', (widget) => {
-        settings.set_int('font-size', widget.get_value_as_int());
-    });
-    widget.attach(fontSizeSpin, 1, row, 1, 1);
-    
-    // Panel Position
-    row++;
-    widget.attach(new Gtk.Label({
-        label: _('Panel Position:'),
-        halign: Gtk.Align.START
-    }), 0, row, 1, 1);
-    
-    const positionCombo = new Gtk.ComboBoxText();
-    positionCombo.append('left', _('Left'));
-    positionCombo.append('right', _('Right'));
-    positionCombo.set_active_id(settings.get_string('position'));
-    positionCombo.connect('changed', (widget) => {
-        settings.set_string('position', widget.get_active_id());
-    });
-    widget.attach(positionCombo, 1, row, 1, 1);
-    
-    widget.show_all();
-    return widget;
+export default class BengaliCalendarPreferences extends ExtensionPreferences {
+    fillPreferencesWindow(window) {
+        const settings = this.getSettings();
+
+        window.set_default_size(520, 420);
+
+        const page = new Adw.PreferencesPage({
+            title: _('Bengali Calendar'),
+        });
+        window.add(page);
+
+        const displayGroup = new Adw.PreferencesGroup({
+            title: _('Display'),
+        });
+        page.add(displayGroup);
+
+        // Display format (string)
+        const formatOptions = [
+            ['full', _('Full (Day, Date Month Year)')],
+            ['short', _('Short (Date Month)')],
+            ['date-only', _('Date Only (Date Month Year)')],
+            ['compact', _('Compact (DD/MM/YYYY)')],
+        ];
+        const formatDropDown = Gtk.DropDown.new_from_strings(formatOptions.map(([, label]) => label));
+        formatDropDown.valign = Gtk.Align.CENTER;
+        const formatRow = new Adw.ActionRow({
+            title: _('Display Format'),
+        });
+        formatRow.add_suffix(formatDropDown);
+        displayGroup.add(formatRow);
+
+        const syncFormatFromSetting = () => {
+            const current = settings.get_string('display-format');
+            const idx = Math.max(0, formatOptions.findIndex(([id]) => id === current));
+            formatDropDown.selected = idx;
+        };
+        syncFormatFromSetting();
+        formatDropDown.connect('notify::selected', () => {
+            const idx = formatDropDown.selected;
+            settings.set_string('display-format', formatOptions[idx][0]);
+        });
+        settings.connect('changed::display-format', syncFormatFromSetting);
+
+        // Toggles
+        displayGroup.add(this._switchRow(settings, 'show-gregorian', _('Show Gregorian Date in Popup')));
+        displayGroup.add(this._switchRow(settings, 'show-festivals', _('Show Festivals and Holidays')));
+        displayGroup.add(this._switchRow(settings, 'use-bengali-numerals', _('Use Bengali Numerals (০-৯)')));
+
+        // Font size (int)
+        const fontRow = new Adw.ActionRow({ title: _('Font Size') });
+        const fontSpin = new Gtk.SpinButton({
+            adjustment: new Gtk.Adjustment({
+                lower: 8,
+                upper: 24,
+                step_increment: 1,
+                page_increment: 1,
+                value: settings.get_int('font-size'),
+            }),
+            valign: Gtk.Align.CENTER,
+        });
+        fontSpin.connect('value-changed', () => settings.set_int('font-size', fontSpin.get_value_as_int()));
+        settings.connect('changed::font-size', () => fontSpin.set_value(settings.get_int('font-size')));
+        fontRow.add_suffix(fontSpin);
+        displayGroup.add(fontRow);
+
+        // Panel position (string)
+        const positionOptions = [
+            ['left', _('Left')],
+            ['right', _('Right')],
+        ];
+        const positionDropDown = Gtk.DropDown.new_from_strings(positionOptions.map(([, label]) => label));
+        positionDropDown.valign = Gtk.Align.CENTER;
+        const positionRow = new Adw.ActionRow({ title: _('Panel Position') });
+        positionRow.add_suffix(positionDropDown);
+        displayGroup.add(positionRow);
+
+        const syncPositionFromSetting = () => {
+            const current = settings.get_string('position');
+            const idx = Math.max(0, positionOptions.findIndex(([id]) => id === current));
+            positionDropDown.selected = idx;
+        };
+        syncPositionFromSetting();
+        positionDropDown.connect('notify::selected', () => {
+            const idx = positionDropDown.selected;
+            settings.set_string('position', positionOptions[idx][0]);
+        });
+        settings.connect('changed::position', syncPositionFromSetting);
+    }
+
+    _switchRow(settings, key, title) {
+        const row = new Adw.ActionRow({ title });
+        const sw = new Gtk.Switch({ valign: Gtk.Align.CENTER });
+        row.add_suffix(sw);
+        row.activatable_widget = sw;
+        settings.bind(key, sw, 'active', Gio.SettingsBindFlags.DEFAULT);
+        return row;
+    }
 }

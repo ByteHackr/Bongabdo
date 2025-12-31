@@ -11,10 +11,8 @@ fail=0
 
 run_one() {
   local file="$1"
-  local mod
-  mod="$(basename "$file" .js)"
   echo "==> $file"
-  if gjs -c "imports.searchPath.unshift('${ROOT_DIR}/test'); imports.searchPath.unshift('${ROOT_DIR}/lib'); imports.searchPath.unshift('${ROOT_DIR}/test/unit'); imports.searchPath.unshift('${ROOT_DIR}/test/integration'); imports['${mod}'];"; then
+  if gjs -m "$file"; then
     echo "PASS: $file"
   else
     echo "FAIL: $file"

@@ -21,7 +21,7 @@ Manual: copy repo to `~/.local/share/gnome-shell/extensions/bengali-calendar@ben
 Open GNOME Extensions app → gear icon, or right-click the indicator → Preferences.
 
 ## Development
-- Run tests: `./test/run-tests.sh` (uses gjs).
+- Run tests: `./test/run-tests.sh` (uses `gjs -m`).
 - CI: GitHub Actions runs the same suite on push/PR.
 
 ## Notes

@@ -1,5 +1,5 @@
-const Assert = imports._assert;
-const Bengali = imports.bengaliCalendar;
+import * as Assert from '../_assert.js';
+import * as Bengali from '../../lib/bengaliCalendar.js';
 
 // Integration-ish tests: run the same pipeline extension uses:
 // gregorian -> bengali -> format (with/without numerals) and verify stable output shapes.

@@ -1,5 +1,5 @@
-const Assert = imports._assert;
-const Bengali = imports.bengaliCalendar;
+import * as Assert from '../_assert.js';
+import * as Bengali from '../../lib/bengaliCalendar.js';
 
 // Unit tests for pure module `lib/bengaliCalendar.js`
 
