@@ -34,14 +34,11 @@ disable:
 
 zip: clean
 	@mkdir -p build
-	@zip -r build/$(UUID).zip . \
-		-x "*.git*" \
-		-x "*build*" \
-		-x "test/**" \
-		-x "*.md" \
-		-x "Makefile" \
-		-x "schemas/gschemas.compiled" \
-		-x "*.zip"
+	@zip -r build/$(UUID).zip \
+		extension.js metadata.json stylesheet.css prefs.js LICENSE \
+		icon.svg icon-symbolic.svg \
+		schemas lib \
+		-x "schemas/gschemas.compiled"
 	@echo "Extension packaged to build/$(UUID).zip"
 
 clean:
