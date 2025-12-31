@@ -1,32 +1,109 @@
 # Bongabdo (GNOME Shell)
 
-A Simple Bengali Calendar Extension for Gnome Shell.
+Show today’s **Bengali date** in the GNOME top bar, with an optional **month view** in the popup.
 
-- Formats: full, short, date-only, compact; Bengali or Western numerals.
-- Popup: Bengali date, optional Gregorian date, optional full-month Bengali calendar, today’s festivals (toggle).
-- Settings: format, numerals, location (West Bengal/India vs Bangladesh), show Gregorian, show festivals, font size, panel position (left/center/right), month calendar toggle.
-- GNOME Shell 45–49.
+- GNOME Shell: **45–49**
+- Location: **West Bengal/India** (Surya Siddhanta mapping) or **Bangladesh** (fixed calendar)
 
-## Install
+### Requirements
+You need:
+- **GNOME Shell**
+- The **Extensions** app / `gnome-extensions` command
+- A **Bengali font** (recommended: **Noto Sans Bengali**)
+
+### Install Bengali fonts (recommended)
+Pick your distro:
+
+- **Ubuntu / Debian**:
+
+```bash
+sudo apt update
+sudo apt install -y fonts-noto-core
+```
+
+- **Fedora**:
+
+```bash
+sudo dnf install -y google-noto-sans-bengali-fonts
+```
+
+- **Arch / Manjaro**:
+
+```bash
+sudo pacman -S --needed noto-fonts
+```
+
+### Install the extension (from this repo)
+1) Install required tools:
+
+- **Ubuntu / Debian**:
+
+```bash
+sudo apt update
+sudo apt install -y git make gnome-shell-extension-prefs
+```
+
+- **Fedora**:
+
+```bash
+sudo dnf install -y git make gnome-extensions-app
+```
+
+- **Arch / Manjaro**:
+
+```bash
+sudo pacman -S --needed git make gnome-shell
+```
+
+2) Install:
+
 ```bash
 git clone https://github.com/ByteHackr/Bongabdo.git
 cd Bongabdo
 make install
-make enable
-# restart Shell (Alt+F2, r, Enter)
 ```
-Manual: copy repo to `~/.local/share/gnome-shell/extensions/bongabdo@bongabdo.github.io/` and run `glib-compile-schemas schemas/`.
 
-## Preferences
-Open GNOME Extensions app → gear icon, or right-click the indicator → Preferences.
+3) Enable:
 
-## Development
-- Run tests: `./test/run-tests.sh` (uses `gjs -m`).
-- CI: GitHub Actions runs the same suite on push/PR.
+```bash
+gnome-extensions enable bongabdo@bongabdo.github.io
+```
 
-## Notes
-- Font: any Bengali-capable font (Noto Sans Bengali recommended).
-- **West Bengal Calendar**: Uses `lib/bengaliMonthStarts.json` mapping (West Bengal Surya Siddhanta). Update from Panjika each year for accuracy. Falls back to heuristic (Apr 14 = Pohela Boishakh) if JSON missing.
+4) Restart GNOME Shell:
+- **Xorg**: press `Alt+F2`, type `r`, press Enter
+- **Wayland**: log out and log back in
 
-## License
-MIT.
+### Use / Settings
+- Open **Extensions** → **Bongabdo** → **Settings**, or right‑click the panel date → **Preferences**
+- Useful options:
+  - Location (West Bengal/India vs Bangladesh)
+  - Panel position (left / center / right)
+  - Font size
+  - Show month calendar in popup
+
+### Notes (West Bengal/India accuracy)
+For **West Bengal/India**, Bongabdo uses `lib/bengaliMonthStarts.json` (Surya Siddhanta / Panjika month-start dates).
+If a year is missing from the file, it falls back to a simple heuristic (Apr 14 ≈ Pohela Boishakh).
+
+### Troubleshooting
+- If you don’t see the indicator, run:
+
+```bash
+gnome-extensions list | grep bongabdo
+```
+
+- To view logs:
+
+```bash
+journalctl --user -f | grep -i bongabdo
+```
+
+### Development (optional)
+- Run tests:
+
+```bash
+./test/run-tests.sh
+```
+
+### License
+MIT
