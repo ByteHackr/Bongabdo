@@ -36,5 +36,3 @@ Assert.assertTruthy(!!viewDec20, 'expected view for Dec 20, 2026');
 Assert.assertEquals(viewDec20.yearKeyUsed, '2026', 'Dec 2026 Poush must use 2026 mapping');
 
 console.log('All West Bengal month view tests passed!');
-
-
