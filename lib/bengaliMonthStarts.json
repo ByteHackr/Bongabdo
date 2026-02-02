@@ -69,5 +69,5 @@
     "10": "2029-02-14",
     "11": "2029-03-15"
   },
-  "_note": "West Bengal Surya Siddhanta calendar. Update from Panjika each year. Format: month index (0=Boishakh) -> Gregorian date (YYYY-MM-DD)"
+  "_note": "West Bengal Surya Siddhanta calendar (Bisuddha Siddhanta Panjika). Update from Panjika each year. Format: month index (0=Boishakh) -> Gregorian date (YYYY-MM-DD). All Sankranti dates are in IST (Indian Standard Time)."
 }

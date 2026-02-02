@@ -1,0 +1,70 @@
+{
+  "_note": "Bengali festivals and holidays curated from bengalicalendar.com. Format: year -> monthIndex -> day -> [array of festival names]. Update annually from bengalicalendar.com",
+  "1432": {
+    "8": {
+      "9": ["Christmas Day"],
+      "14": ["Putrada Ekadashi"],
+      "16": ["New Years Day"],
+      "27": ["Swami Vivekananda Birth Day", "National Youth Day"],
+      "29": ["Shattila Ekadashi", "Poush Parbon", "Makar Sankranti"]
+    },
+    "9": {
+      "14": ["Magh Sankranti"]
+    },
+    "10": {
+      "14": ["Falgun Sankranti"]
+    },
+    "11": {
+      "14": ["Choitro Sankranti"]
+    }
+  },
+  "1433": {
+    "0": {
+      "1": ["Bengali New Year", "Nababarsha", "Pohela Boishakh"],
+      "15": ["Rabindranath Tagore Birth Day"],
+      "18": ["Akshya Tritiya"],
+      "26": ["Mohini Ekadashi"]
+    },
+    "1": {
+      "1": ["May Day", "Buddha Purnima", "Birth Day of Pandit Raghunath Murmu"],
+      "8": ["World Red Cross Day"],
+      "9": ["Rabindranath Tagore Birth Day"],
+      "13": ["Apara Ekadashi"]
+    },
+    "2": {
+      "1": ["Asadh Sankranti"]
+    },
+    "3": {
+      "15": ["Srabon Sankranti"]
+    },
+    "4": {
+      "1": ["Bhadro Sankranti"]
+    },
+    "5": {
+      "1": ["Ashshin Sankranti"],
+      "15": ["Durga Puja Starts"],
+      "20": ["Durga Puja"]
+    },
+    "6": {
+      "1": ["Kartik Sankranti"],
+      "15": ["Kali Puja"]
+    },
+    "7": {
+      "1": ["Ogrohaeon Sankranti"],
+      "15": ["Ogrohaeon Sankranti"]
+    },
+    "8": {
+      "1": ["Poush Sankranti"],
+      "15": ["Poush Sankranti"]
+    },
+    "9": {
+      "14": ["Magh Sankranti"]
+    },
+    "10": {
+      "15": ["Falgun Sankranti"]
+    },
+    "11": {
+      "14": ["Choitro Sankranti"]
+    }
+  }
+}

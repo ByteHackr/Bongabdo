@@ -42,9 +42,7 @@ const testDates = [
     new Date(2024, 0, 1),   // Jan 1
     new Date(2024, 5, 15),  // Jun 15
     new Date(2024, 11, 31), // Dec 31
-];
-
-testDates.forEach(date => {
+];testDates.forEach(date => {
     const dayName = Bengali.BENGALI_DAYS[date.getDay()];
     const bd = Bengali.gregorianToBengali(date.getFullYear(), date.getMonth() + 1, date.getDate());
     const formatted = Bengali.formatBengaliDate(bd, dayName, 'full', false);

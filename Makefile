@@ -37,7 +37,13 @@ zip: clean
 	@zip -r build/$(UUID).zip \
 		extension.js metadata.json stylesheet.css prefs.js LICENSE \
 		schemas lib \
-		-x "schemas/gschemas.compiled"
+		-x "schemas/gschemas.compiled" \
+		-x "*.git*" \
+		-x "test/*" \
+		-x ".github/*" \
+		-x "*.swp" \
+		-x "*~" \
+		-x ".DS_Store"
 	@echo "Extension packaged to build/$(UUID).zip"
 
 clean:

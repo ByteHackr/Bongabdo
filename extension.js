@@ -5,13 +5,14 @@ import GLib from 'gi://GLib';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import { BongabdoIndicator } from './lib/indicator.js';
-import { loadMonthStartsAsync } from './lib/monthStarts.js';
+import { loadMonthStartsAsync, loadFestivalsAsync } from './lib/monthStarts.js';
 
 export default class BongabdoExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
 
         this._monthStartsLoadSeq = 0;
+        this._festivalsLoadSeq = 0;
 
         const location = this._settings.get_string('location') || 'west-bengal';
 
@@ -19,6 +20,7 @@ export default class BongabdoExtension extends Extension {
             uuid: this.uuid,
             settings: this._settings,
             monthStarts: null,
+            festivalsData: null,
             location,
         });
         this._indicator.create();
@@ -27,6 +29,8 @@ export default class BongabdoExtension extends Extension {
 
         // Load month-start mappings asynchronously to avoid blocking GNOME Shell.
         this._reloadMonthStarts(location);
+        // Load festivals data asynchronously
+        this._reloadFestivals();
 
         // Periodic update (every minute).
         this._updateIntervalId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 60, () => {
@@ -76,6 +80,21 @@ export default class BongabdoExtension extends Extension {
         });
     }
 
+    _reloadFestivals() {
+        if (!this._indicator)
+            return;
+
+        const seq = ++this._festivalsLoadSeq;
+        loadFestivalsAsync(this).then((festivalsData) => {
+            // Ignore out-of-order async completions, or completions after disable().
+            if (!this._indicator || seq !== this._festivalsLoadSeq)
+                return;
+
+            this._indicator.setFestivalsData(festivalsData);
+            this._indicator.update();
+        });
+    }
+
     disable() {
         // Stop periodic updates first to avoid races while tearing down actors.
         if (this._updateIntervalId) {
@@ -89,6 +108,7 @@ export default class BongabdoExtension extends Extension {
         this._indicator = null;
 
         this._monthStartsLoadSeq = 0;
+        this._festivalsLoadSeq = 0;
         this._settings = null;
     }
 }

@@ -22,8 +22,8 @@ const viewJan1 = computeWestBengalMonthView({
 Assert.assertTruthy(!!viewJan1, 'expected view for Jan 1, 2026');
 Assert.assertEquals(viewJan1.yearKeyUsed, '2025', 'Jan 1, 2026 Poush must use 2025 mapping');
 Assert.assertEquals(viewJan1.firstDayOfWeek, 3, 'Poush day 1 (Dec 17, 2025) should be Wednesday');
-Assert.assertEquals(viewJan1.daysInMonth, 30, 'Poush length expected 30 days in mapping');
-Assert.assertEquals(viewJan1.prevMonthDays, 30, 'Ogrohayon length expected 30 days in mapping');
+Assert.assertEquals(viewJan1.daysInMonth, 29, 'Poush length expected 29 days in mapping (Dec 16, 2025 to Jan 15, 2026)');
+Assert.assertEquals(viewJan1.prevMonthDays, 29, 'Ogrohayon length expected 29 days in mapping');
 
 // For late December 2026, Poush should use mapping year "2026".
 const viewDec20 = computeWestBengalMonthView({

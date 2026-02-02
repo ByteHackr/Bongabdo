@@ -174,6 +174,4 @@ Assert.assert(leapYearDate.day <= 32, 'leap year Choitro can have 32 days');
 // Test invalid monthStarts (should fallback)
 const invalidMapping = { "2025": {} };
 const invalidResult = Bengali.gregorianToBengali(2025, 6, 15, invalidMapping);
-Assert.assert(invalidResult.month >= 0 && invalidResult.month <= 11, 'invalid mapping should fallback');
-
-console.log('All Bengali calendar unit tests passed!');
+Assert.assert(invalidResult.month >= 0 && invalidResult.month <= 11, 'invalid mapping should fallback');console.log('All Bengali calendar unit tests passed!');

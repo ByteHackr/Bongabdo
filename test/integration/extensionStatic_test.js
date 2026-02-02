@@ -73,6 +73,4 @@ Assert.assertTruthy(monthStartsText.includes('bengaliMonthStarts.json'), 'monthS
 // ===== Cleanup Tests =====
 Assert.assertTruthy(extensionText.includes('disconnectObject'), 'extension.js should disconnectObject in disable');
 Assert.assertTruthy(extensionText.includes('source_remove'), 'extension.js should remove timeout in disable');
-Assert.assertTruthy(indicatorText.includes('destroy()'), 'indicator should implement destroy()');
-
-console.log('All extension static tests passed!');
+Assert.assertTruthy(indicatorText.includes('destroy()'), 'indicator should implement destroy()');console.log('All extension static tests passed!');
