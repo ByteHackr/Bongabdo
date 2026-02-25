@@ -14,7 +14,7 @@ export default class BongabdoExtension extends Extension {
         this._monthStartsLoadSeq = 0;
         this._festivalsLoadSeq = 0;
 
-        const location = this._settings.get_string('location') || 'west-bengal';
+        const location = this._settings.get_string('location') || 'india';
 
         this._indicator = new BongabdoIndicator({
             uuid: this.uuid,
@@ -46,7 +46,7 @@ export default class BongabdoExtension extends Extension {
             'changed::use-bengali-numerals', () => this._indicator?.update(),
             'changed::show-month-calendar', () => this._indicator?.update(),
             'changed::location', () => {
-                const newLocation = this._settings.get_string('location') || 'west-bengal';
+                const newLocation = this._settings.get_string('location') || 'india';
                 this._reloadMonthStarts(newLocation);
             },
             'changed::font-size', () => this._indicator?.setFontSize(this._settings.get_int('font-size')),
@@ -59,15 +59,8 @@ export default class BongabdoExtension extends Extension {
         if (!this._indicator)
             return;
 
-        const loc = location || 'west-bengal';
+        const loc = location || 'india';
         this._indicator.setLocation(loc);
-
-        // Bangladesh uses a fixed calendar (no mapping needed).
-        if (loc === 'bangladesh') {
-            this._indicator.setMonthStarts(null);
-            this._indicator.update();
-            return;
-        }
 
         const seq = ++this._monthStartsLoadSeq;
         loadMonthStartsAsync(this, loc).then((monthStarts) => {

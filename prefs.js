@@ -49,31 +49,10 @@ export default class BengaliCalendarPreferences extends ExtensionPreferences {
         });
         settings.connect('changed::display-format', syncFormatFromSetting);
 
-        // Location (string)
-        const locationOptions = [
-            ['west-bengal', _('West Bengal')],
-            ['bangladesh', _('Bangladesh')],
-            ['india', _('India')],
-        ];
-        const locationDropDown = Gtk.DropDown.new_from_strings(locationOptions.map(([, label]) => label));
-        locationDropDown.valign = Gtk.Align.CENTER;
-        const locationRow = new Adw.ActionRow({
-            title: _('Location'),
-        });
-        locationRow.add_suffix(locationDropDown);
-        displayGroup.add(locationRow);
-
-        const syncLocationFromSetting = () => {
-            const current = settings.get_string('location');
-            const idx = Math.max(0, locationOptions.findIndex(([id]) => id === current));
-            locationDropDown.selected = idx;
-        };
-        syncLocationFromSetting();
-        locationDropDown.connect('notify::selected', () => {
-            const idx = locationDropDown.selected;
-            settings.set_string('location', locationOptions[idx][0]);
-        });
-        settings.connect('changed::location', syncLocationFromSetting);
+        // India only - aligned with bengalicalendar.com (West Bengal, Tripura, Assam)
+        if (settings.get_string('location') !== 'india') {
+            settings.set_string('location', 'india');
+        }
 
         // Toggles
         displayGroup.add(this._switchRow(settings, 'show-gregorian', _('Show Gregorian Date in Popup')));

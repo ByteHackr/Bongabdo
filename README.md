@@ -5,7 +5,7 @@
 Show today’s **Bengali date** in the GNOME top bar, with an optional **month view** in the popup.
 
 - GNOME Shell: **45–49**
-- Location: **West Bengal/India** (Surya Siddhanta mapping) or **Bangladesh** (fixed calendar)
+- **India** (West Bengal, Tripura, Assam) — aligned with [bengalicalendar.com](https://bengalicalendar.com/)
 
 ### Requirements
 You need:
@@ -78,13 +78,12 @@ gnome-extensions enable bongabdo@bongabdo.github.io
 ### Use / Settings
 - Open **Extensions** → **Bongabdo** → **Settings**, or right‑click the panel date → **Preferences**
 - Useful options:
-  - Location (West Bengal/India vs Bangladesh)
   - Panel position (left / center / right)
   - Font size
   - Show month calendar in popup
 
-### Notes (West Bengal/India accuracy)
-For **West Bengal/India**, Bongabdo uses `lib/bengaliMonthStarts.json` (Surya Siddhanta / Panjika month-start dates).
+### Notes (India accuracy)
+Bongabdo uses `lib/bengaliMonthStarts.json` (Surya Siddhanta / Bisuddha Siddhanta Panjika) and is aligned with [bengalicalendar.com](https://bengalicalendar.com/).
 If a year is missing from the file, it falls back to a simple heuristic (Apr 14 ≈ Pohela Boishakh).
 
 ### Troubleshooting

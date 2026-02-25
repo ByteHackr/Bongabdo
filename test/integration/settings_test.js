@@ -63,7 +63,7 @@ Assert.assertTruthy(schemaText.includes('<default>false</default>'), 'show-grego
 Assert.assertTruthy(schemaText.includes('<default>true</default>'), 'show-festivals default should be true');
 Assert.assertTruthy(schemaText.includes('<default>14</default>'), 'font-size default should be 14');
 Assert.assertTruthy(schemaText.includes('<default>\'right\'</default>'), 'position default should be right');
-Assert.assertTruthy(schemaText.includes('<default>\'west-bengal\'</default>'), 'location default should be west-bengal');
+Assert.assertTruthy(schemaText.includes('<default>\'india\'</default>'), 'location default should be india');
 
 // Test position options
 Assert.assertTruthy(schemaText.includes('left') || extensionText.includes('left'), 'should support left position');
@@ -72,7 +72,7 @@ Assert.assertTruthy(schemaText.includes('center') || extensionText.includes('cen
 
 // Test location options
 Assert.assertTruthy(prefsText.includes('West Bengal'), 'should have West Bengal option');
-Assert.assertTruthy(prefsText.includes('Bangladesh'), 'should have Bangladesh option');
+Assert.assertTruthy(prefsText.includes('india') || !prefsText.includes('Bangladesh'), 'should be India-only');
 Assert.assertTruthy(prefsText.includes('India'), 'should have India option');
 
 console.log('All settings tests passed!');

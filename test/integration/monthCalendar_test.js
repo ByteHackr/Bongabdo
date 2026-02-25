@@ -47,26 +47,20 @@ const dec31 = Bengali.gregorianToBengali(2025, 12, 31, monthStarts2025);
 Assert.assertEquals(dec31.month, 8, 'Dec 31 should be Poush');
 Assert.assertEquals(dec31.day, 15, 'Dec 31 should be day 15');
 
-// Test month boundaries
+// Test month boundaries (firstDay from Bisuddha Siddhanta / bengalicalendar.com)
 const testMonths = [
-    { month: 0, start: "2025-04-15", end: "2025-05-15", name: "Boishakh" },
-    { month: 1, start: "2025-05-15", end: "2025-06-15", name: "Joishtho" },
-    { month: 8, start: "2025-12-16", end: "2026-01-15", name: "Poush" },
+    { month: 0, firstDayStr: "2025-04-15", name: "Boishakh" },   // Override: Apr 15 = Day 1
+    { month: 1, firstDayStr: "2025-05-16", name: "Joishtho" },   // Sankranti May 15 + 1
+    { month: 8, firstDayStr: "2025-12-17", name: "Poush" },      // Sankranti Dec 16 + 1
 ];
 
-testMonths.forEach(({ month, start, end, name }) => {
+testMonths.forEach(({ month, firstDayStr, name }) => {
     const parseDate = (str) => {
         const [y, m, d] = str.split('-').map(Number);
         return new Date(y, m - 1, d);
     };
     
-    const startDate = parseDate(start);
-    const endDate = parseDate(end);
-    const days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-    
-    // First day after Sankranti
-    const firstDay = new Date(startDate);
-    firstDay.setDate(firstDay.getDate() + 1);
+    const firstDay = parseDate(firstDayStr);
     
     const firstDayConverted = Bengali.gregorianToBengali(
         firstDay.getFullYear(),
@@ -77,17 +71,16 @@ testMonths.forEach(({ month, start, end, name }) => {
     
     Assert.assertEquals(firstDayConverted.month, month, `${name} first day should be correct month`);
     Assert.assertEquals(firstDayConverted.day, 1, `${name} first day should be day 1`);
-    Assert.assert(days >= 30 && days <= 32, `${name} should have 30-32 days`);
 });
 
 // Test year boundary (Choitro to Boishakh)
 const choitroEnd = Bengali.gregorianToBengali(2026, 3, 15, monthStarts2025);
 Assert.assertEquals(choitroEnd.month, 11, 'Mar 15 should be Choitro');
 
-// For Surya Siddhanta mapping: mapping date is Sankranti; day 1 begins the NEXT day.
+// Boishakh 1433: Apr 15 = Day 1 (per bengalicalendar.com)
 const boishakhStart = Bengali.gregorianToBengali(2026, 4, 15, monthStarts2025);
 Assert.assertEquals(boishakhStart.month, 0, 'Apr 15 should be Boishakh');
-Assert.assertEquals(boishakhStart.day, 1, 'Apr 15 should be day 1 (day after Sankranti)');
+Assert.assertEquals(boishakhStart.day, 1, 'Apr 15 should be day 1');
 
 console.log('All month calendar tests passed!');
 

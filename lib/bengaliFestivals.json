@@ -1,6 +1,16 @@
 {
-  "_note": "Bengali festivals and holidays curated from bengalicalendar.com. Format: year -> monthIndex -> day -> [array of festival names]. Update annually from bengalicalendar.com",
   "1432": {
+    "0": {
+      "1": ["Bengali New Year's Day (Nababarsha)"],
+      "4": ["Good Friday"],
+      "5": ["Easter Saturday"],
+      "10": ["Baruthini Ekadashi"],
+      "16": ["Akshya Tritiya"],
+      "17": ["May Day"],
+      "24": ["World Redcross Day", "Mohini Ekadashi"],
+      "25": ["Rabindranath Tagore Birth Day"],
+      "28": ["Buddha Purnima", "Birth Day of Pandit Raghunath Murmu"]
+    },
     "8": {
       "9": ["Christmas Day"],
       "14": ["Putrada Ekadashi"],
@@ -12,18 +22,41 @@
       "14": ["Magh Sankranti"]
     },
     "10": {
-      "14": ["Falgun Sankranti"]
+      "1": ["Birth Day of Thakur Panchanan Barma"],
+      "2": ["Shivaratri"],
+      "14": ["Amalaki Ekadashi"],
+      "15": ["National Science Day"],
+      "18": ["Doljatra"],
+      "19": ["Holi"],
+      "23": ["International Womens Day"],
+      "26": ["Sheetala Ashtami"],
+      "30": ["Papmochani Ekadashi"]
     },
     "11": {
-      "14": ["Choitro Sankranti"]
+      "2": ["Birth Day of Shri Shri Harichand Thakur"],
+      "5": ["Day before Eid-UI-Fitr"],
+      "6": ["Eid-UI-Fitr"],
+      "9": ["World Tuberculosis Day"],
+      "11": ["Ram Nawami"],
+      "14": ["Kamada Ekadashi"],
+      "16": ["Mahavir Jayanti"],
+      "17": ["April Fool Day"],
+      "19": ["Good Friday"],
+      "20": ["Easter Saturday"],
+      "23": ["World Health Day"],
+      "29": ["Baruthini Ekadashi"],
+      "30": ["Birth Day of Dr. B. R. Ambedkar"]
     }
   },
   "1433": {
     "0": {
-      "1": ["Bengali New Year", "Nababarsha", "Pohela Boishakh"],
-      "15": ["Rabindranath Tagore Birth Day"],
-      "18": ["Akshya Tritiya"],
-      "26": ["Mohini Ekadashi"]
+      "1": ["Bengali New Year's Day (Nababarsha)"],
+      "5": ["Akshya Tritiya"],
+      "13": ["Mohini Ekadashi"],
+      "17": ["May Day", "Buddha Purnima", "Birth Day of Pandit Raghunath Murmu"],
+      "24": ["World Redcross Day"],
+      "25": ["Rabindranath Tagore Birth Day"],
+      "29": ["Apara Ekadashi"]
     },
     "1": {
       "1": ["May Day", "Buddha Purnima", "Birth Day of Pandit Raghunath Murmu"],
@@ -66,5 +99,6 @@
     "11": {
       "14": ["Choitro Sankranti"]
     }
-  }
+  },
+  "_note": "Bengali festivals and holidays from bengalicalendar.com. Format: year -> monthIndex -> day -> [array of festival names]. Update annually from bengalicalendar.com"
 }

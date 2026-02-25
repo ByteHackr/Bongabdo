@@ -150,17 +150,15 @@ const dec16 = Bengali.gregorianToBengali(2025, 12, 16, monthStarts2025);
 // The key test is that Dec 17 is day 1, which is tested above
 Assert.assert(dec16.month >= 0 && dec16.month <= 11, 'Dec 16 should map to valid month');
 
-// Test month boundaries
-// Apr 15 is Sankranti date, so Apr 16 is day 1
+// Test month boundaries (bengalicalendar.com: Boishakh 1432 firstDay = Apr 15)
 const apr15 = Bengali.gregorianToBengali(2025, 4, 15, monthStarts2025);
-// Apr 15 is Sankranti, so it might still be previous month or fallback
-// The key test is Apr 16 should be day 1
 const apr16 = Bengali.gregorianToBengali(2025, 4, 16, monthStarts2025);
+Assert.assertEquals(apr15.month, 0, 'Apr 15 should be Boishakh');
+Assert.assertEquals(apr15.day, 1, 'Apr 15 should be day 1');
 Assert.assertEquals(apr16.month, 0, 'Apr 16 should be Boishakh');
-Assert.assertEquals(apr16.day, 1, 'Apr 16 should be day 1 (day after Sankranti)');
-// Year boundary: Sankranti date stays in previous Bengali year; next day starts new year.
-Assert.assertEquals(apr15.year, 2024 - 593, 'Apr 15 (Sankranti date) should be previous Bengali year');
-Assert.assertEquals(apr16.year, 2025 - 593, 'Apr 16 should be new Bengali year');
+Assert.assertEquals(apr16.day, 2, 'Apr 16 should be day 2');
+Assert.assertEquals(apr15.year, 2025 - 593, 'Apr 15 should be Bengali year 1432');
+Assert.assertEquals(apr16.year, 2025 - 593, 'Apr 16 should be Bengali year 1432');
 
 // Test with null mapping (should fallback to heuristic)
 const fallback = Bengali.gregorianToBengali(2024, 4, 14, null);

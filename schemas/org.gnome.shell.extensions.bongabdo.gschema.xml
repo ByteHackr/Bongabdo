@@ -33,9 +33,9 @@
       <description>Position in panel: 'left', 'center', or 'right'</description>
     </key>
     <key name="location" type="s">
-      <default>'west-bengal'</default>
+      <default>'india'</default>
       <summary>Location</summary>
-      <description>Calendar location: 'west-bengal', 'bangladesh', or 'india'</description>
+      <description>Calendar: India (West Bengal, Tripura, Assam - aligned with bengalicalendar.com)</description>
     </key>
     <key name="show-month-calendar" type="b">
       <default>true</default>

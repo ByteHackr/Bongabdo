@@ -57,7 +57,7 @@ popup-menu-item .bengali-date-popup {
 .bongabdo-calendar {
     padding: 10px 12px 12px 12px;
     spacing: 8px;
-    min-width: 260px;
+    min-width: 300px;
 }
 
 .bongabdo-calendar-menuitem {
@@ -99,8 +99,8 @@ popup-menu-item .bengali-date-popup {
 .bongabdo-calendar-day-name {
     font-size: 11px;
     font-weight: 600;
-    min-width: 34px;
-    max-width: 34px;
+    min-width: 40px;
+    max-width: 40px;
     text-align: center;
     opacity: 0.65;
 }
@@ -116,9 +116,9 @@ popup-menu-item .bengali-date-popup {
 .bongabdo-calendar-day {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
     font-size: 12px;
-    min-width: 34px;
-    max-width: 34px;
-    padding: 8px 0;
+    min-width: 40px;
+    max-width: 40px;
+    padding: 4px 0;
     text-align: center;
     border-radius: 999px;
 }
@@ -131,6 +131,39 @@ popup-menu-item .bengali-date-popup {
     font-weight: 700;
     background-color: rgba(237, 51, 59, 0.85);
     color: white;
+}
+
+/* Day cell with festival (vertical layout) - stands out for visibility */
+.bongabdo-calendar-day-cell {
+    min-width: 40px;
+    max-width: 40px;
+    spacing: 2px;
+    padding: 4px 2px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.bongabdo-calendar-day-cell:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.bongabdo-calendar-day-cell .bongabdo-calendar-day.today {
+    padding: 2px 0;
+}
+
+.bongabdo-calendar-day-festival {
+    font-size: 10px;
+    font-weight: 500;
+    color: inherit;
+    text-align: center;
+    max-width: 38px;
+    line-height: 1.25;
+    opacity: 1;
+}
+
+/* Slight accent for festival text - improves readability */
+.bongabdo-calendar-day-cell .bongabdo-calendar-day-festival {
+    font-weight: 600;
 }
 
 /* Calendar Grid */
@@ -227,5 +260,13 @@ popup-menu-item .bengali-date-popup {
     .bongabdo-calendar-day.today {
         background-color: rgba(237, 51, 59, 0.75);
         color: white;
+    }
+
+    .bongabdo-calendar-day-cell {
+        background-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .bongabdo-calendar-day-cell:hover {
+        background-color: rgba(0, 0, 0, 0.25);
     }
 }
