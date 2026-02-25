@@ -2,7 +2,7 @@
 
 ![Bongabdo Screenshot](screenshot.png)
 
-Show today’s **Bengali date** in the GNOME top bar, with an optional **month view** in the popup.
+Show today’s **Bengali date** in the GNOME top bar, with an optional **month view** and **festivals** in the popup.
 
 - GNOME Shell: **45–49**
 - **India** (West Bengal, Tripura, Assam) — aligned with [bengalicalendar.com](https://bengalicalendar.com/)
@@ -79,8 +79,9 @@ gnome-extensions enable bongabdo@bongabdo.github.io
 - Open **Extensions** → **Bongabdo** → **Settings**, or right‑click the panel date → **Preferences**
 - Useful options:
   - Panel position (left / center / right)
-  - Font size
-  - Show month calendar in popup
+  - Font size, Calendar font size
+  - Show month calendar, Festivals and holidays, Festivals list below calendar
+- **Popup:** Hover dates for tooltip; click a date to see its details in the header; expand “Festivals this month” for the full list.
 
 ### Notes (India accuracy)
 Bongabdo uses `lib/bengaliMonthStarts.json` (Surya Siddhanta / Bisuddha Siddhanta Panjika) and is aligned with [bengalicalendar.com](https://bengalicalendar.com/).
