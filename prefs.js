@@ -59,6 +59,7 @@ export default class BengaliCalendarPreferences extends ExtensionPreferences {
         displayGroup.add(this._switchRow(settings, 'show-festivals', _('Show Festivals and Holidays')));
         displayGroup.add(this._switchRow(settings, 'use-bengali-numerals', _('Use Bengali Numerals (০-৯)')));
         displayGroup.add(this._switchRow(settings, 'show-month-calendar', _('Show Month Calendar in Popup')));
+        displayGroup.add(this._switchRow(settings, 'show-festivals-list', _('Show Festivals List Below Calendar')));
 
         // Font size (int)
         const fontRow = new Adw.ActionRow({ title: _('Font Size') });
@@ -76,6 +77,23 @@ export default class BengaliCalendarPreferences extends ExtensionPreferences {
         settings.connect('changed::font-size', () => fontSpin.set_value(settings.get_int('font-size')));
         fontRow.add_suffix(fontSpin);
         displayGroup.add(fontRow);
+
+        // Calendar font size (int)
+        const fontRowCal = new Adw.ActionRow({ title: _('Calendar Font Size') });
+        const fontSpinCal = new Gtk.SpinButton({
+            adjustment: new Gtk.Adjustment({
+                lower: 9,
+                upper: 16,
+                step_increment: 1,
+                page_increment: 1,
+                value: settings.get_int('calendar-font-size'),
+            }),
+            valign: Gtk.Align.CENTER,
+        });
+        fontSpinCal.connect('value-changed', () => settings.set_int('calendar-font-size', fontSpinCal.get_value_as_int()));
+        settings.connect('changed::calendar-font-size', () => fontSpinCal.set_value(settings.get_int('calendar-font-size')));
+        fontRowCal.add_suffix(fontSpinCal);
+        displayGroup.add(fontRowCal);
 
         // Panel position (string)
         const positionOptions = [

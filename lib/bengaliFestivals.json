@@ -1,5 +1,12 @@
 {
   "1432": {
+    "_holidayTypes": {
+      "0-1": "public", "0-4": "public", "0-5": "public", "0-17": "public",
+      "0-25": "public", "0-28": "public", "8-9": "public", "8-16": "public",
+      "8-27": "public", "10-15": "public", "10-18": "public", "10-19": "public",
+      "11-6": "public", "11-11": "public", "11-16": "public", "11-19": "public",
+      "11-20": "public", "11-30": "public"
+    },
     "0": {
       "1": ["Bengali New Year's Day (Nababarsha)"],
       "4": ["Good Friday"],
@@ -49,6 +56,10 @@
     }
   },
   "1433": {
+    "_holidayTypes": {
+      "0-1": "public", "0-17": "public", "0-25": "public", "1-1": "public",
+      "5-20": "public", "10-18": "public", "10-19": "public"
+    },
     "0": {
       "1": ["Bengali New Year's Day (Nababarsha)"],
       "5": ["Akshya Tritiya"],

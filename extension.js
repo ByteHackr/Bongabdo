@@ -45,6 +45,8 @@ export default class BongabdoExtension extends Extension {
             'changed::show-festivals', () => this._indicator?.update(),
             'changed::use-bengali-numerals', () => this._indicator?.update(),
             'changed::show-month-calendar', () => this._indicator?.update(),
+            'changed::calendar-font-size', () => this._indicator?.update(),
+            'changed::show-festivals-list', () => this._indicator?.update(),
             'changed::location', () => {
                 const newLocation = this._settings.get_string('location') || 'india';
                 this._reloadMonthStarts(newLocation);

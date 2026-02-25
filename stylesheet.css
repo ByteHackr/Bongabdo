@@ -4,23 +4,24 @@
 .bengali-calendar-label {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
     font-size: 14px;
-    /* Slight vertical padding to look centered in the panel */
     padding: 1px 8px 0 8px;
     color: inherit;
-    font-weight: 500;
+    font-weight: 700;
     text-align: center;
+    opacity: 1;
 }
 
-/* Popup Menu Items */
+/* Popup Menu Items - Main date display */
 .bengali-date-popup {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
-    padding: 12px 16px;
+    padding: 14px 16px;
     color: inherit;
     text-align: center;
     font-stretch: normal;
     width: 100%;
+    opacity: 1;
 }
 
 /* Center align menu items */
@@ -34,22 +35,22 @@ popup-menu-item .bengali-date-popup {
 }
 
 .gregorian-date-popup {
-    font-size: 13px;
-    font-weight: 400;
-    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 16px;
     color: inherit;
-    opacity: 0.9;
+    opacity: 1;
     text-align: center;
 }
 
 .festivals-popup {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
+    font-size: 13px;
+    font-weight: 600;
     padding: 10px 16px;
     color: inherit;
     font-style: italic;
-    opacity: 0.9;
+    opacity: 1;
     text-align: center;
 }
 
@@ -80,15 +81,16 @@ popup-menu-item .bengali-date-popup {
 }
 
 .bongabdo-calendar-nav-button:hover {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
 .bongabdo-calendar-header-label {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
     text-align: center;
-    padding: 4px 0;
+    padding: 6px 0;
+    opacity: 1;
 }
 
 .bongabdo-calendar-day-names-row {
@@ -102,7 +104,7 @@ popup-menu-item .bengali-date-popup {
     min-width: 40px;
     max-width: 40px;
     text-align: center;
-    opacity: 0.65;
+    opacity: 0.9;
 }
 
 .bongabdo-calendar-weeks {
@@ -116,15 +118,17 @@ popup-menu-item .bengali-date-popup {
 .bongabdo-calendar-day {
     font-family: 'Noto Sans Bengali', 'Kalapi', 'Lohit Bengali', 'Mukti', sans-serif;
     font-size: 12px;
+    font-weight: 500;
     min-width: 40px;
     max-width: 40px;
     padding: 4px 0;
     text-align: center;
     border-radius: 999px;
+    opacity: 1;
 }
 
 .bongabdo-calendar-day.other-month {
-    opacity: 0.35;
+    opacity: 0.5;
 }
 
 .bongabdo-calendar-day.today {
@@ -133,37 +137,71 @@ popup-menu-item .bengali-date-popup {
     color: white;
 }
 
-/* Day cell with festival (vertical layout) - stands out for visibility */
-.bongabdo-calendar-day-cell {
-    min-width: 40px;
-    max-width: 40px;
-    spacing: 2px;
-    padding: 4px 2px;
+
+/* Tooltip */
+.bongabdo-tooltip {
+    padding: 6px 10px;
     border-radius: 6px;
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
 }
 
-.bongabdo-calendar-day-cell:hover {
-    background-color: rgba(255, 255, 255, 0.12);
-}
-
-.bongabdo-calendar-day-cell .bongabdo-calendar-day.today {
-    padding: 2px 0;
-}
-
-.bongabdo-calendar-day-festival {
-    font-size: 10px;
-    font-weight: 500;
+.bongabdo-tooltip-label {
+    font-size: 11px;
     color: inherit;
-    text-align: center;
-    max-width: 38px;
-    line-height: 1.25;
+}
+
+/* Holiday type badge */
+.bongabdo-holiday-badge {
+    font-size: 8px;
+    margin-left: 2px;
+}
+
+.bongabdo-holiday-public {
+    color: rgba(115, 210, 22, 1);
+}
+
+.bongabdo-holiday-sectional {
+    color: rgba(99, 153, 255, 1);
+}
+
+.bongabdo-holiday-state {
+    color: rgba(239, 138, 98, 1);
+}
+
+/* Festivals list */
+.bongabdo-festivals-list {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.bongabdo-festivals-toggle-btn {
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+.bongabdo-festivals-toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.bongabdo-festivals-toggle {
+    font-size: 12px;
+    font-weight: 600;
     opacity: 1;
 }
 
-/* Slight accent for festival text - improves readability */
-.bongabdo-calendar-day-cell .bongabdo-calendar-day-festival {
+.bongabdo-festivals-list-content {
+    spacing: 6px;
+    padding: 10px 0 0 10px;
+}
+
+.bongabdo-festivals-list-row {
+    font-size: 11px;
     font-weight: 600;
+    opacity: 1;
+    max-width: 280px;
+    color: inherit;
 }
 
 /* Calendar Grid */
@@ -198,7 +236,7 @@ popup-menu-item .bengali-date-popup {
     text-align: center;
     padding: 4px 2px;
     color: inherit;
-    opacity: 0.7;
+    opacity: 0.9;
 }
 
 .bengali-calendar-weeks {
@@ -260,13 +298,5 @@ popup-menu-item .bengali-date-popup {
     .bongabdo-calendar-day.today {
         background-color: rgba(237, 51, 59, 0.75);
         color: white;
-    }
-
-    .bongabdo-calendar-day-cell {
-        background-color: rgba(0, 0, 0, 0.15);
-    }
-
-    .bongabdo-calendar-day-cell:hover {
-        background-color: rgba(0, 0, 0, 0.25);
     }
 }
